@@ -1,0 +1,88 @@
+// 家計簿ページのスタイル
+.kakeibo-container {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+.kakeibo-header {
+  background-color: var(--color-bg-light);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--spacing-lg) 0;
+  box-shadow: var(--shadow-sm);
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+      margin: 0;
+      font-size: var(--font-size-2xl);
+      color: var(--color-primary);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+
+      .user-name {
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-text-primary);
+      }
+    }
+  }
+}
+
+.kakeibo-content {
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.loading-state {
+  text-align: center;
+  padding: var(--spacing-2xl);
+
+  p {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+  }
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-xl);
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.calendar-section,
+.transactions-section {
+  // カレンダーとトランザクションリストのスタイルは各コンポーネントで定義
+}
+
+// レスポンシブ対応
+@media (max-width: 768px) {
+  .kakeibo-header {
+    .header-content {
+      flex-direction: column;
+      gap: var(--spacing-md);
+      text-align: center;
+
+      h1 {
+        font-size: var(--font-size-xl);
+      }
+    }
+  }
+
+  .kakeibo-content {
+    padding: var(--spacing-md);
+  }
+
+  .content-grid {
+    gap: var(--spacing-md);
+  }
+}

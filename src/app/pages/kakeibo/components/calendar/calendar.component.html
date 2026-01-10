@@ -1,0 +1,52 @@
+<div class="calendar-container">
+  <!-- 月切り替えヘッダー -->
+  <div class="calendar-header">
+    <button class="btn btn-outline btn-sm" (click)="previousMonth()">
+      ◀ 前月
+    </button>
+    <h3 class="current-month">{{ year }}年 {{ month }}月</h3>
+    <button class="btn btn-outline btn-sm" (click)="nextMonth()">
+      次月 ▶
+    </button>
+  </div>
+
+  <!-- カレンダー本体 -->
+  <div class="calendar-grid">
+    <!-- 曜日ヘッダー -->
+    <div class="calendar-weekdays">
+      <div *ngFor="let day of weekDays; let i = index"
+           class="weekday-cell"
+           [class.sunday]="i === 0"
+           [class.saturday]="i === 6">
+        {{ day }}
+      </div>
+    </div>
+
+    <!-- 日付グリッド -->
+    <div class="calendar-days">
+      <div *ngFor="let week of getCalendarDays()" class="calendar-week">
+        <div *ngFor="let date of week; let i = index"
+             class="day-cell"
+             [class.empty]="!date"
+             [class.sunday]="i === 0 && date"
+             [class.saturday]="i === 6 && date"
+             [class.has-data]="getDailySummary(date)"
+             (click)="onDateClick(date)">
+          <ng-container *ngIf="date">
+            <div class="day-number">{{ date.getDate() }}</div>
+            <ng-container *ngIf="getDailySummary(date) as summary">
+              <div class="day-summary">
+                <div *ngIf="summary.income > 0" class="income-amount text-income">
+                  +{{ formatAmount(summary.income) }}
+                </div>
+                <div *ngIf="summary.expense > 0" class="expense-amount text-expense">
+                  -{{ formatAmount(summary.expense) }}
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

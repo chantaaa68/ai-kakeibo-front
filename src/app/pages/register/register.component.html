@@ -1,0 +1,126 @@
+<div class="register-container">
+  <div class="container container-sm">
+    <div class="register-card card">
+      <!-- ヘッダー -->
+      <div class="register-header">
+        <h2>新規登録</h2>
+        <p class="text-muted">新しいアカウントを作成してください</p>
+      </div>
+
+      <!-- エラーメッセージ -->
+      <div *ngIf="errorMessage" class="error-alert">
+        {{ errorMessage }}
+      </div>
+
+      <!-- 登録フォーム -->
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- ユーザー名 -->
+        <div class="form-group">
+          <label class="form-label" for="name">ユーザー名</label>
+          <input
+            type="text"
+            id="name"
+            class="form-control"
+            [class.is-invalid]="name?.invalid && name?.touched"
+            formControlName="name"
+            placeholder="山田 太郎"
+          />
+          <div *ngIf="name?.invalid && name?.touched" class="form-error">
+            <span *ngIf="name?.errors?.['required']">ユーザー名を入力してください</span>
+            <span *ngIf="name?.errors?.['minlength']">ユーザー名は2文字以上で入力してください</span>
+          </div>
+        </div>
+
+        <!-- メールアドレス -->
+        <div class="form-group">
+          <label class="form-label" for="email">メールアドレス</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            [class.is-invalid]="email?.invalid && email?.touched"
+            formControlName="email"
+            placeholder="example@email.com"
+          />
+          <div *ngIf="email?.invalid && email?.touched" class="form-error">
+            <span *ngIf="email?.errors?.['required']">メールアドレスを入力してください</span>
+            <span *ngIf="email?.errors?.['email']">有効なメールアドレスを入力してください</span>
+          </div>
+        </div>
+
+        <!-- パスワード -->
+        <div class="form-group">
+          <label class="form-label" for="password">パスワード</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            [class.is-invalid]="password?.invalid && password?.touched"
+            formControlName="password"
+            placeholder="6文字以上のパスワード"
+          />
+          <div *ngIf="password?.invalid && password?.touched" class="form-error">
+            <span *ngIf="password?.errors?.['required']">パスワードを入力してください</span>
+            <span *ngIf="password?.errors?.['minlength']">パスワードは6文字以上で入力してください</span>
+          </div>
+        </div>
+
+        <!-- パスワード確認 -->
+        <div class="form-group">
+          <label class="form-label" for="confirmPassword">パスワード（確認）</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            class="form-control"
+            [class.is-invalid]="(confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched)"
+            formControlName="confirmPassword"
+            placeholder="パスワードを再入力"
+          />
+          <div *ngIf="confirmPassword?.invalid && confirmPassword?.touched" class="form-error">
+            <span *ngIf="confirmPassword?.errors?.['required']">パスワード（確認）を入力してください</span>
+          </div>
+          <div *ngIf="registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched" class="form-error">
+            <span>パスワードが一致しません</span>
+          </div>
+        </div>
+
+        <!-- 家計簿の説明（任意） -->
+        <div class="form-group">
+          <label class="form-label" for="kakeiboDescription">
+            家計簿の説明（任意）
+          </label>
+          <textarea
+            id="kakeiboDescription"
+            class="form-control"
+            formControlName="kakeiboDescription"
+            placeholder="例：家族の家計簿"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <!-- ボタン -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-primary btn-block btn-lg"
+            [disabled]="isLoading"
+          >
+            <span *ngIf="!isLoading">登録</span>
+            <span *ngIf="isLoading">登録中...</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- フッター -->
+      <div class="register-footer">
+        <p class="text-muted">
+          既にアカウントをお持ちの方は
+          <a (click)="navigateToLogin()" class="link">ログイン</a>
+        </p>
+        <p class="text-muted">
+          <a (click)="navigateToHome()" class="link">ホームに戻る</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

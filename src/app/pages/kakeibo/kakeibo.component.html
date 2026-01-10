@@ -1,0 +1,44 @@
+<div class="kakeibo-container">
+  <!-- ヘッダー -->
+  <div class="kakeibo-header">
+    <div class="container">
+      <div class="header-content">
+        <h1>AI家計簿</h1>
+        <div class="header-actions">
+          <span class="user-name">{{ getUserName() }}さん</span>
+          <button class="btn btn-outline btn-sm" (click)="logout()">
+            ログアウト
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- メインコンテンツ -->
+  <div class="kakeibo-content container">
+    <div *ngIf="isLoading" class="loading-state">
+      <p>読み込み中...</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="content-grid">
+      <!-- カレンダーセクション -->
+      <div class="calendar-section">
+        <app-calendar
+          [year]="currentYear"
+          [month]="currentMonth"
+          [dailySummaries]="dailySummaries"
+          (dateSelected)="onDateSelected($event)"
+          (monthChanged)="onMonthChanged($event)">
+        </app-calendar>
+      </div>
+
+      <!-- トランザクションリストセクション -->
+      <div class="transactions-section">
+        <app-transaction-list
+          [selectedDate]="selectedDate"
+          [transactions]="selectedTransactions">
+        </app-transaction-list>
+      </div>
+    </div>
+  </div>
+</div>
