@@ -5,6 +5,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { KakeiboComponent } from './pages/kakeibo/kakeibo.component';
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { CategoryRegisterComponent } from './pages/category-register/category-register.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 export const routes: Routes = [
   // ホーム画面（トップページ）
@@ -40,6 +41,13 @@ export const routes: Routes = [
   {
     path: 'category-register',
     component: CategoryRegisterComponent
+    // TODO: 認証ガードを追加
+    // canActivate: [AuthGuard]
+  },
+  // ユーザー情報画面（認証が必要）
+  {
+    path: 'profile',
+    component: ProfileComponent
     // TODO: 認証ガードを追加
     // canActivate: [AuthGuard]
   },

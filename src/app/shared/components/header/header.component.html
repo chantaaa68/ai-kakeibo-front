@@ -1,0 +1,47 @@
+<header class="app-header">
+  <div class="container">
+    <div class="header-content">
+      <!-- ロゴ -->
+      <div class="header-logo" (click)="navigateToKakeibo()">
+        <h1>AI家計簿</h1>
+      </div>
+
+      <!-- ナビゲーション -->
+      <nav class="header-nav">
+        <button class="nav-item" (click)="navigateToKakeibo()">
+          <span class="material-icons">home</span>
+          <span class="nav-label">ホーム</span>
+        </button>
+        <button class="nav-item" (click)="navigateToCategories()">
+          <span class="material-icons">category</span>
+          <span class="nav-label">カテゴリ</span>
+        </button>
+      </nav>
+
+      <!-- ユーザーメニュー -->
+      <div class="user-menu-container">
+        <button class="user-menu-trigger" (click)="toggleUserMenu()">
+          <span class="material-icons">account_circle</span>
+          <span class="user-name">{{ getUserName() }}</span>
+          <span class="material-icons">{{ isUserMenuOpen ? 'expand_less' : 'expand_more' }}</span>
+        </button>
+
+        <!-- ドロップダウンメニュー -->
+        <div class="user-menu-dropdown" [class.open]="isUserMenuOpen">
+          <button class="menu-item" (click)="navigateToProfile()">
+            <span class="material-icons">person</span>
+            <span>ユーザー情報</span>
+          </button>
+          <div class="menu-divider"></div>
+          <button class="menu-item logout" (click)="logout()">
+            <span class="material-icons">logout</span>
+            <span>ログアウト</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- メニューが開いている時の背景オーバーレイ -->
+<div class="overlay" *ngIf="isUserMenuOpen" (click)="closeUserMenu()"></div>

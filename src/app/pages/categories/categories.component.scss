@@ -1,46 +1,32 @@
 // カテゴリ一覧ページのスタイル
 .categories-container {
-  min-height: 100vh;
+  min-height: calc(100vh - 70px);
   background-color: var(--color-bg);
-}
-
-.categories-header {
-  background-color: var(--color-bg-light);
-  border-bottom: 1px solid var(--color-border);
-  padding: var(--spacing-lg) 0;
-  box-shadow: var(--shadow-sm);
-
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    h1 {
-      margin: 0;
-      font-size: var(--font-size-2xl);
-      color: var(--color-primary);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-
-      button {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-xs);
-
-        .material-icons {
-          font-size: 18px;
-        }
-      }
-    }
-  }
 }
 
 .categories-content {
   padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+
+  h2 {
+    margin: 0;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+
+    .material-icons {
+      font-size: 18px;
+    }
+  }
 }
 
 .loading-state {

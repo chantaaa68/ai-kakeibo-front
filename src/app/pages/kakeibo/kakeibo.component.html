@@ -1,22 +1,7 @@
-<div class="kakeibo-container">
-  <!-- ヘッダー -->
-  <div class="kakeibo-header">
-    <div class="container">
-      <div class="header-content">
-        <h1>AI家計簿</h1>
-        <div class="header-actions">
-          <span class="user-name">{{ getUserName() }}さん</span>
-          <button class="btn btn-secondary btn-sm" (click)="navigateToCategories()">
-            カテゴリ管理
-          </button>
-          <button class="btn btn-outline btn-sm" (click)="logout()">
-            ログアウト
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- 共通ヘッダー -->
+<app-header></app-header>
 
+<div class="kakeibo-container">
   <!-- メインコンテンツ -->
   <div class="kakeibo-content container">
     <div *ngIf="isLoading" class="loading-state">

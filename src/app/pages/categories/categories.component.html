@@ -1,22 +1,7 @@
-<div class="categories-container">
-  <!-- ヘッダー -->
-  <div class="categories-header">
-    <div class="container">
-      <div class="header-content">
-        <h1>カテゴリ管理</h1>
-        <div class="header-actions">
-          <button class="btn btn-primary btn-sm" (click)="navigateToRegister()">
-            <span class="material-icons">add</span>
-            新規作成
-          </button>
-          <button class="btn btn-outline btn-sm" (click)="navigateToKakeibo()">
-            戻る
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- 共通ヘッダー -->
+<app-header></app-header>
 
+<div class="categories-container">
   <!-- メインコンテンツ -->
   <div class="categories-content container">
     <div *ngIf="isLoading" class="loading-state">
@@ -24,6 +9,15 @@
     </div>
 
     <div *ngIf="!isLoading">
+      <!-- ページヘッダー -->
+      <div class="page-header">
+        <h2>カテゴリ管理</h2>
+        <button class="btn btn-primary" (click)="navigateToRegister()">
+          <span class="material-icons">add</span>
+          新規作成
+        </button>
+      </div>
+
       <!-- タイプ切り替えボタン -->
       <div class="type-switcher">
         <button

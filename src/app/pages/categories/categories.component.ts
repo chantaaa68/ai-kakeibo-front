@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CategoryService } from '../../services/category.service';
 import { CategoryItemComponent } from '../../shared/components/category-item/category-item.component';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 import { Category, TransactionType } from '../../models/kakeibo.model';
 
 @Component({
   selector: 'app-categories',
-  imports: [CommonModule, CategoryItemComponent],
+  imports: [CommonModule, CategoryItemComponent, HeaderComponent],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.scss'
 })
@@ -76,10 +77,5 @@ export class CategoriesComponent implements OnInit {
   // 新規カテゴリ登録画面に遷移
   public navigateToRegister(): void {
     this.router.navigate(['/category-register']);
-  }
-
-  // 家計簿画面に戻る
-  public navigateToKakeibo(): void {
-    this.router.navigate(['/kakeibo']);
   }
 }

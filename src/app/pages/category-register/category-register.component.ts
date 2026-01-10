@@ -4,11 +4,12 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CategoryService } from '../../services/category.service';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 import { CreateCategoryRequest, AvailableIcon, TransactionType } from '../../models/kakeibo.model';
 
 @Component({
   selector: 'app-category-register',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, HeaderComponent],
   templateUrl: './category-register.component.html',
   styleUrl: './category-register.component.scss'
 })

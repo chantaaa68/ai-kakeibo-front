@@ -5,11 +5,12 @@ import { AuthService } from '../../services/auth.service';
 import { KakeiboService } from '../../services/kakeibo.service';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { TransactionListComponent } from './components/transaction-list/transaction-list.component';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 import { DailySummary, Transaction } from '../../models/kakeibo.model';
 
 @Component({
   selector: 'app-kakeibo',
-  imports: [CommonModule, CalendarComponent, TransactionListComponent],
+  imports: [CommonModule, CalendarComponent, TransactionListComponent, HeaderComponent],
   templateUrl: './kakeibo.component.html',
   styleUrl: './kakeibo.component.scss'
 })
@@ -92,21 +93,5 @@ export class KakeiboComponent implements OnInit {
     this.selectedDate = null;
     this.selectedTransactions = [];
     this.loadMonthlyData();
-  }
-
-  // ログアウト
-  public logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/']);
-  }
-
-  // ユーザー名を取得
-  public getUserName(): string {
-    return this.authService.getCurrentUser()?.name || 'ゲスト';
-  }
-
-  // カテゴリ一覧画面に遷移
-  public navigateToCategories(): void {
-    this.router.navigate(['/categories']);
   }
 }

@@ -1,0 +1,129 @@
+<!-- 共通ヘッダー -->
+<app-header></app-header>
+
+<div class="profile-container">
+  <div class="container container-sm">
+    <div class="profile-card card">
+      <!-- ヘッダー -->
+      <div class="profile-header">
+        <h2>ユーザー情報</h2>
+        <p class="text-muted">アカウント情報を確認・更新できます</p>
+      </div>
+
+      <!-- 成功メッセージ -->
+      <div *ngIf="successMessage" class="success-alert">
+        {{ successMessage }}
+      </div>
+
+      <!-- エラーメッセージ -->
+      <div *ngIf="errorMessage" class="error-alert">
+        {{ errorMessage }}
+      </div>
+
+      <!-- 更新フォーム -->
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+        <!-- ユーザー名 -->
+        <div class="form-group">
+          <label class="form-label" for="name">ユーザー名</label>
+          <input
+            type="text"
+            id="name"
+            class="form-control"
+            [class.is-invalid]="name?.invalid && name?.touched"
+            formControlName="name"
+            placeholder="山田 太郎"
+          />
+          <div *ngIf="name?.invalid && name?.touched" class="form-error">
+            <span *ngIf="name?.errors?.['required']">ユーザー名を入力してください</span>
+            <span *ngIf="name?.errors?.['minlength']">ユーザー名は2文字以上で入力してください</span>
+          </div>
+        </div>
+
+        <!-- メールアドレス -->
+        <div class="form-group">
+          <label class="form-label" for="email">メールアドレス</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            [class.is-invalid]="email?.invalid && email?.touched"
+            formControlName="email"
+            placeholder="example@email.com"
+          />
+          <div *ngIf="email?.invalid && email?.touched" class="form-error">
+            <span *ngIf="email?.errors?.['required']">メールアドレスを入力してください</span>
+            <span *ngIf="email?.errors?.['email']">有効なメールアドレスを入力してください</span>
+          </div>
+        </div>
+
+        <!-- パスワード変更セクション -->
+        <div class="password-section">
+          <h3>パスワード変更</h3>
+          <p class="text-muted">パスワードを変更する場合のみ入力してください</p>
+
+          <!-- 現在のパスワード -->
+          <div class="form-group">
+            <label class="form-label" for="currentPassword">現在のパスワード</label>
+            <input
+              type="password"
+              id="currentPassword"
+              class="form-control"
+              formControlName="currentPassword"
+              placeholder="現在のパスワード"
+            />
+          </div>
+
+          <!-- 新しいパスワード -->
+          <div class="form-group">
+            <label class="form-label" for="newPassword">新しいパスワード</label>
+            <input
+              type="password"
+              id="newPassword"
+              class="form-control"
+              [class.is-invalid]="newPassword?.invalid && newPassword?.touched"
+              formControlName="newPassword"
+              placeholder="6文字以上のパスワード"
+            />
+            <div *ngIf="newPassword?.invalid && newPassword?.touched" class="form-error">
+              <span *ngIf="newPassword?.errors?.['minlength']">パスワードは6文字以上で入力してください</span>
+            </div>
+          </div>
+
+          <!-- パスワード確認 -->
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword">新しいパスワード（確認）</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              class="form-control"
+              [class.is-invalid]="(confirmPassword?.invalid && confirmPassword?.touched) || (profileForm.errors?.['passwordMismatch'] && confirmPassword?.touched)"
+              formControlName="confirmPassword"
+              placeholder="パスワードを再入力"
+            />
+            <div *ngIf="profileForm.errors?.['passwordMismatch'] && confirmPassword?.touched" class="form-error">
+              <span>パスワードが一致しません</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ボタン -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-primary btn-block btn-lg"
+            [disabled]="isLoading">
+            <span *ngIf="!isLoading">更新</span>
+            <span *ngIf="isLoading">更新中...</span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline btn-block btn-lg"
+            (click)="navigateToKakeibo()"
+            [disabled]="isLoading">
+            キャンセル
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
