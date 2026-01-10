@@ -13,7 +13,7 @@
       <div class="page-header">
         <h2>カテゴリ管理</h2>
         <button class="btn btn-primary" (click)="navigateToRegister()">
-          <span class="material-icons">add</span>
+          <mat-icon>add</mat-icon>
           新規作成
         </button>
       </div>
@@ -46,7 +46,7 @@
 
       <!-- 空の状態 -->
       <div *ngIf="displayedCategories.length === 0" class="empty-state">
-        <span class="material-icons empty-icon">category</span>
+        <mat-icon class="empty-icon">category</mat-icon>
         <p>{{ selectedType === TransactionType.EXPENSE ? '支出' : '収入' }}カテゴリがまだありません</p>
         <button class="btn btn-primary" (click)="navigateToRegister()">
           最初のカテゴリを作成

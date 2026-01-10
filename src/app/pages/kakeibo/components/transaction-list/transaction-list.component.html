@@ -14,7 +14,7 @@
 
   <div *ngIf="transactions.length > 0" class="transactions-scroll">
     <div *ngFor="let transaction of transactions" class="transaction-item card">
-      <div class="transaction-icon">{{ transaction.category.icon }}</div>
+      <mat-icon class="transaction-icon">{{ transaction.category.icon }}</mat-icon>
       <div class="transaction-info">
         <div class="transaction-name">{{ transaction.name }}</div>
         <div class="transaction-category text-muted">

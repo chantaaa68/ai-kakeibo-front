@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
 import { CategoryService } from '../../services/category.service';
 import { CategoryItemComponent } from '../../shared/components/category-item/category-item.component';
@@ -9,7 +10,7 @@ import { Category, TransactionType } from '../../models/kakeibo.model';
 
 @Component({
   selector: 'app-categories',
-  imports: [CommonModule, CategoryItemComponent, HeaderComponent],
+  imports: [CommonModule, CategoryItemComponent, HeaderComponent, MatIconModule],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.scss'
 })

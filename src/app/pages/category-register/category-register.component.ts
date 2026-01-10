@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
 import { CategoryService } from '../../services/category.service';
 import { HeaderComponent } from '../../shared/components/header/header.component';
@@ -9,7 +10,7 @@ import { CreateCategoryRequest, AvailableIcon, TransactionType } from '../../mod
 
 @Component({
   selector: 'app-category-register',
-  imports: [CommonModule, ReactiveFormsModule, HeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, HeaderComponent, MatIconModule],
   templateUrl: './category-register.component.html',
   styleUrl: './category-register.component.scss'
 })

@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { Transaction, TransactionType } from '../../../../models/kakeibo.model';
 
 @Component({
   selector: 'app-transaction-list',
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './transaction-list.component.html',
   styleUrl: './transaction-list.component.scss'
 })

@@ -9,11 +9,11 @@
       <!-- ナビゲーション -->
       <nav class="header-nav">
         <button class="nav-item" (click)="navigateToKakeibo()">
-          <span class="material-icons">home</span>
+          <mat-icon>home</mat-icon>
           <span class="nav-label">ホーム</span>
         </button>
         <button class="nav-item" (click)="navigateToCategories()">
-          <span class="material-icons">category</span>
+          <mat-icon>category</mat-icon>
           <span class="nav-label">カテゴリ</span>
         </button>
       </nav>
@@ -21,20 +21,20 @@
       <!-- ユーザーメニュー -->
       <div class="user-menu-container">
         <button class="user-menu-trigger" (click)="toggleUserMenu()">
-          <span class="material-icons">account_circle</span>
+          <mat-icon>account_circle</mat-icon>
           <span class="user-name">{{ getUserName() }}</span>
-          <span class="material-icons">{{ isUserMenuOpen ? 'expand_less' : 'expand_more' }}</span>
+          <mat-icon>{{ isUserMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
         </button>
 
         <!-- ドロップダウンメニュー -->
         <div class="user-menu-dropdown" [class.open]="isUserMenuOpen">
           <button class="menu-item" (click)="navigateToProfile()">
-            <span class="material-icons">person</span>
+            <mat-icon>person</mat-icon>
             <span>ユーザー情報</span>
           </button>
           <div class="menu-divider"></div>
           <button class="menu-item logout" (click)="logout()">
-            <span class="material-icons">logout</span>
+            <mat-icon>logout</mat-icon>
             <span>ログアウト</span>
           </button>
         </div>

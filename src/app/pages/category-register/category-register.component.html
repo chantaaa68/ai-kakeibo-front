@@ -52,7 +52,7 @@
                 [value]="TransactionType.EXPENSE"
               />
               <span class="type-label">
-                <span class="material-icons">remove_circle</span>
+                <mat-icon>remove_circle</mat-icon>
                 支出
               </span>
             </label>
@@ -63,7 +63,7 @@
                 [value]="TransactionType.INCOME"
               />
               <span class="type-label">
-                <span class="material-icons">add_circle</span>
+                <mat-icon>add_circle</mat-icon>
                 収入
               </span>
             </label>
@@ -88,7 +88,7 @@
               [class.selected]="selectedIcon === availableIcon.name"
               (click)="selectIcon(availableIcon.name)"
               [title]="availableIcon.displayName">
-              <span class="material-icons">{{ availableIcon.name }}</span>
+              <mat-icon>{{ availableIcon.name }}</mat-icon>
             </div>
           </div>
         </div>

@@ -58,12 +58,12 @@ export class KakeiboService {
 
     // カテゴリのモックデータ
     const mockCategories: Category[] = [
-      { id: '1', name: '給料', icon: '💰', type: TransactionType.INCOME },
-      { id: '2', name: '副業', icon: '💼', type: TransactionType.INCOME },
-      { id: '3', name: '食費', icon: '🍔', type: TransactionType.EXPENSE },
-      { id: '4', name: '交通費', icon: '🚃', type: TransactionType.EXPENSE },
-      { id: '5', name: '娯楽', icon: '🎮', type: TransactionType.EXPENSE },
-      { id: '6', name: '光熱費', icon: '💡', type: TransactionType.EXPENSE },
+      { id: '1', name: '給料', icon: 'payments', type: TransactionType.INCOME },
+      { id: '2', name: '副業', icon: 'work', type: TransactionType.INCOME },
+      { id: '3', name: '食費', icon: 'restaurant', type: TransactionType.EXPENSE },
+      { id: '4', name: '交通費', icon: 'train', type: TransactionType.EXPENSE },
+      { id: '5', name: '娯楽', icon: 'sports_esports', type: TransactionType.EXPENSE },
+      { id: '6', name: '光熱費', icon: 'lightbulb', type: TransactionType.EXPENSE },
     ];
 
     // 各日のデータを生成
