@@ -1,4 +1,4 @@
-# Editor configuration, see https://editorconfig.org
+# エディタ設定、詳細: https://editorconfig.org
 root = true
 
 [*]
