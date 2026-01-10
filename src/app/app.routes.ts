@@ -3,6 +3,8 @@ import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { KakeiboComponent } from './pages/kakeibo/kakeibo.component';
+import { CategoriesComponent } from './pages/categories/categories.component';
+import { CategoryRegisterComponent } from './pages/category-register/category-register.component';
 
 export const routes: Routes = [
   // ホーム画面（トップページ）
@@ -24,6 +26,20 @@ export const routes: Routes = [
   {
     path: 'kakeibo',
     component: KakeiboComponent
+    // TODO: 認証ガードを追加
+    // canActivate: [AuthGuard]
+  },
+  // カテゴリ一覧画面（認証が必要）
+  {
+    path: 'categories',
+    component: CategoriesComponent
+    // TODO: 認証ガードを追加
+    // canActivate: [AuthGuard]
+  },
+  // カテゴリ登録画面（認証が必要）
+  {
+    path: 'category-register',
+    component: CategoryRegisterComponent
     // TODO: 認証ガードを追加
     // canActivate: [AuthGuard]
   },

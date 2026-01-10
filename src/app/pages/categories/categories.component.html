@@ -1,0 +1,63 @@
+<div class="categories-container">
+  <!-- ヘッダー -->
+  <div class="categories-header">
+    <div class="container">
+      <div class="header-content">
+        <h1>カテゴリ管理</h1>
+        <div class="header-actions">
+          <button class="btn btn-primary btn-sm" (click)="navigateToRegister()">
+            <span class="material-icons">add</span>
+            新規作成
+          </button>
+          <button class="btn btn-outline btn-sm" (click)="navigateToKakeibo()">
+            戻る
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- メインコンテンツ -->
+  <div class="categories-content container">
+    <div *ngIf="isLoading" class="loading-state">
+      <p>読み込み中...</p>
+    </div>
+
+    <div *ngIf="!isLoading">
+      <!-- タイプ切り替えボタン -->
+      <div class="type-switcher">
+        <button
+          class="btn"
+          [class.btn-primary]="selectedType === TransactionType.EXPENSE"
+          [class.btn-outline]="selectedType !== TransactionType.EXPENSE"
+          (click)="changeType(TransactionType.EXPENSE)">
+          支出カテゴリ
+        </button>
+        <button
+          class="btn"
+          [class.btn-primary]="selectedType === TransactionType.INCOME"
+          [class.btn-outline]="selectedType !== TransactionType.INCOME"
+          (click)="changeType(TransactionType.INCOME)">
+          収入カテゴリ
+        </button>
+      </div>
+
+      <!-- カテゴリグリッド -->
+      <div class="categories-grid">
+        <app-category-item
+          *ngFor="let category of displayedCategories"
+          [category]="category">
+        </app-category-item>
+      </div>
+
+      <!-- 空の状態 -->
+      <div *ngIf="displayedCategories.length === 0" class="empty-state">
+        <span class="material-icons empty-icon">category</span>
+        <p>{{ selectedType === TransactionType.EXPENSE ? '支出' : '収入' }}カテゴリがまだありません</p>
+        <button class="btn btn-primary" (click)="navigateToRegister()">
+          最初のカテゴリを作成
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

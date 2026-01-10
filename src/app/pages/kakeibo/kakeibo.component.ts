@@ -104,4 +104,9 @@ export class KakeiboComponent implements OnInit {
   public getUserName(): string {
     return this.authService.getCurrentUser()?.name || 'ゲスト';
   }
+
+  // カテゴリ一覧画面に遷移
+  public navigateToCategories(): void {
+    this.router.navigate(['/categories']);
+  }
 }

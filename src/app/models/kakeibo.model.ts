@@ -52,3 +52,19 @@ export interface MonthlyDataResponse {
   month: number;
   dailySummaries: DailySummary[];
 }
+
+// カテゴリ作成リクエスト
+export interface CreateCategoryRequest {
+  name: string;
+  icon: string;
+  type: TransactionType;
+  userId: string;
+}
+
+// 利用可能なアイコン情報
+export interface AvailableIcon {
+  id: string;
+  name: string;           // アイコン名（例：shopping_cart）
+  displayName: string;    // 表示名（例：買い物）
+  category: string;       // カテゴリ（例：shopping, food, transportなど）
+}
