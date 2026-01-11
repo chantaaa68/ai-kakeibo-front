@@ -13,10 +13,21 @@ import { TransactionListComponent } from '../kakeibo/components/transaction-list
 import {
   GetMonthlyResultResponse,
   MonthlyReportItem,
-  CategoryReportItem,
   TransactionType,
   Transaction
 } from '../../models/kakeibo.model';
+
+// カテゴリアイコンマッピング定数
+const CATEGORY_ICON_MAP: Record<string, string> = {
+  '食費': 'restaurant',
+  '交通費': 'train',
+  '娯楽': 'sports_esports',
+  '光熱費': 'lightbulb',
+  '通信費': 'phone',
+  '給料': 'payments',
+  '副業': 'work',
+  'その他': 'category'
+};
 
 @Component({
   selector: 'app-monthly-report',
@@ -34,26 +45,15 @@ import {
   styleUrl: './monthly-report.component.scss'
 })
 export class MonthlyReportComponent implements OnInit {
-  // 表示タイプ（収入/支出）
   public displayType: 'expense' | 'income' = 'expense';
-  public TransactionType = TransactionType;
-
-  // データ
   public monthlyData: GetMonthlyResultResponse | null = null;
   public availableMonths: string[] = [];
-  public selectedMonth: string = '';
-
-  // 選択された月のデータ
+  public selectedMonth = '';
   public currentMonthData: MonthlyReportItem | null = null;
-
-  // 円グラフ用データ
   public chartData: Array<{ name: string; value: number }> = [];
-  public colorScheme: string = 'vivid';
-
-  // 選択されたカテゴリの詳細
+  public colorScheme = 'vivid';
   public selectedCategory: string | null = null;
   public selectedTransactions: Transaction[] = [];
-
   public isLoading = true;
 
   constructor(
@@ -63,17 +63,52 @@ export class MonthlyReportComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    // 認証チェック
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // 月間レポートデータを読み込み
     this.loadMonthlyReport();
   }
 
-  // 月間レポートデータを読み込み
+  public toggleDisplayType(): void {
+    this.displayType = this.displayType === 'expense' ? 'income' : 'expense';
+    this.clearCategorySelection();
+    this.initializeMonthSelection();
+  }
+
+  public onMonthChange(): void {
+    this.clearCategorySelection();
+    this.updateChartData();
+  }
+
+  public onCategorySelect(categoryName: string): void {
+    this.selectedCategory = categoryName;
+    // TODO: API実装後は実際のカテゴリ詳細データを取得する
+    this.selectedTransactions = this.generateMockTransactions(categoryName);
+  }
+
+  public getCategoryIcon(categoryName: string): string {
+    return CATEGORY_ICON_MAP[categoryName] || 'category';
+  }
+
+  public formatAmount(amount: number): string {
+    return amount.toLocaleString('ja-JP');
+  }
+
+  public formatMonth(month: string): string {
+    const [year, monthNum] = month.split('-');
+    return `${year}年${parseInt(monthNum, 10)}月`;
+  }
+
+  public getTotalAmount(): number {
+    if (!this.currentMonthData) return 0;
+    return this.currentMonthData.categoryReportItems.reduce(
+      (sum, item) => sum + item.totalAmount,
+      0
+    );
+  }
+
   private loadMonthlyReport(): void {
     this.isLoading = true;
     const user = this.authService.getCurrentUser();
@@ -100,38 +135,21 @@ export class MonthlyReportComponent implements OnInit {
     });
   }
 
-  // 月の選択肢を初期化
   private initializeMonthSelection(): void {
     if (!this.monthlyData) return;
 
-    // 支出データから利用可能な月を取得
-    this.availableMonths = this.displayType === 'expense'
-      ? this.monthlyData.monthlyExpenses.map(item => item.usedMonth)
-      : this.monthlyData.monthlyIncomes.map(item => item.usedMonth);
+    const monthlyItems = this.displayType === 'expense'
+      ? this.monthlyData.monthlyExpenses
+      : this.monthlyData.monthlyIncomes;
 
-    // 最新の月を選択
+    this.availableMonths = monthlyItems.map(item => item.usedMonth);
+
     if (this.availableMonths.length > 0) {
       this.selectedMonth = this.availableMonths[0];
       this.updateChartData();
     }
   }
 
-  // 表示タイプ切り替え（収入/支出）
-  public toggleDisplayType(): void {
-    this.displayType = this.displayType === 'expense' ? 'income' : 'expense';
-    this.selectedCategory = null;
-    this.selectedTransactions = [];
-    this.initializeMonthSelection();
-  }
-
-  // 月変更時
-  public onMonthChange(): void {
-    this.selectedCategory = null;
-    this.selectedTransactions = [];
-    this.updateChartData();
-  }
-
-  // 円グラフデータを更新
   private updateChartData(): void {
     if (!this.monthlyData) return;
 
@@ -139,70 +157,36 @@ export class MonthlyReportComponent implements OnInit {
       ? this.monthlyData.monthlyExpenses
       : this.monthlyData.monthlyIncomes;
 
-    this.currentMonthData = monthlyItems.find(item => item.usedMonth === this.selectedMonth) || null;
+    this.currentMonthData = monthlyItems.find(
+      item => item.usedMonth === this.selectedMonth
+    ) || null;
 
-    if (this.currentMonthData) {
-      this.chartData = this.currentMonthData.categoryReportItems.map(item => ({
-        name: item.categoryName,
-        value: item.totalAmount
-      }));
-    } else {
-      this.chartData = [];
-    }
+    this.chartData = this.currentMonthData
+      ? this.currentMonthData.categoryReportItems.map(item => ({
+          name: item.categoryName,
+          value: item.totalAmount
+        }))
+      : [];
   }
 
-  // カテゴリ選択時
-  public onCategorySelect(categoryName: string): void {
-    this.selectedCategory = categoryName;
-
-    // モックの取引データを生成（本来はAPIから取得）
-    this.selectedTransactions = this.generateMockTransactions(categoryName);
+  private clearCategorySelection(): void {
+    this.selectedCategory = null;
+    this.selectedTransactions = [];
   }
 
-  // カテゴリアイコンを取得
-  public getCategoryIcon(categoryName: string): string {
-    const iconMap: { [key: string]: string } = {
-      '食費': 'restaurant',
-      '交通費': 'train',
-      '娯楽': 'sports_esports',
-      '光熱費': 'lightbulb',
-      '通信費': 'phone',
-      '給料': 'payments',
-      '副業': 'work',
-      'その他': 'category'
-    };
-    return iconMap[categoryName] || 'category';
-  }
-
-  // 金額をフォーマット
-  public formatAmount(amount: number): string {
-    return amount.toLocaleString('ja-JP');
-  }
-
-  // 月をフォーマット（yyyy-mm → yyyy年m月）
-  public formatMonth(month: string): string {
-    const [year, monthNum] = month.split('-');
-    return `${year}年${parseInt(monthNum, 10)}月`;
-  }
-
-  // 合計金額を計算
-  public getTotalAmount(): number {
-    if (!this.currentMonthData) return 0;
-    return this.currentMonthData.categoryReportItems.reduce((sum, item) => sum + item.totalAmount, 0);
-  }
-
-  // モックの取引データを生成（開発用）
+  // TODO: API実装後は削除
   private generateMockTransactions(categoryName: string): Transaction[] {
-    const type = this.displayType === 'expense' ? TransactionType.EXPENSE : TransactionType.INCOME;
+    const type = this.displayType === 'expense'
+      ? TransactionType.EXPENSE
+      : TransactionType.INCOME;
     const icon = this.getCategoryIcon(categoryName);
-
-    const mockTransactions: Transaction[] = [];
     const numTransactions = Math.floor(Math.random() * 5) + 3;
+    const mockTransactions: Transaction[] = [];
 
     for (let i = 0; i < numTransactions; i++) {
       const day = Math.floor(Math.random() * 28) + 1;
       const [year, month] = this.selectedMonth.split('-');
-      const date = new Date(parseInt(year), parseInt(month) - 1, day);
+      const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, day);
 
       mockTransactions.push({
         id: `mock-${i}`,
@@ -220,7 +204,6 @@ export class MonthlyReportComponent implements OnInit {
       });
     }
 
-    // 日付順にソート
     return mockTransactions.sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 }

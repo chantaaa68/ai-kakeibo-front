@@ -4,7 +4,6 @@ import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { ApiResponse } from '../models/api-response.model';
 import {
-  Kakeibo,
   Transaction,
   MonthlyDataRequest,
   MonthlyDataResponse,
@@ -21,58 +20,49 @@ import {
 export class KakeiboService {
   constructor(private apiService: ApiService) {}
 
-  // 月別データを取得
   public getMonthlyData(request: MonthlyDataRequest): Observable<ApiResponse<MonthlyDataResponse>> {
-    // モックデータを生成
-    const mockData = this.generateMockMonthlyData(request.year, request.month);
-
     return this.apiService.get<MonthlyDataResponse>(
       `/kakeibo/${request.kakeiboId}/monthly`,
       { year: request.year, month: request.month }
     ).pipe(
       map(response => {
-        // 開発中はモックデータを使用
-        response.data = mockData;
+        // TODO: API実装後は削除
+        response.data = this.generateMockMonthlyData(request.year, request.month);
         return response;
       })
     );
   }
 
-  // 取引を作成
   public createTransaction(transaction: Partial<Transaction>): Observable<ApiResponse<Transaction>> {
     return this.apiService.post<Transaction>('/transactions', transaction);
   }
 
-  // 取引を更新
   public updateTransaction(id: string, transaction: Partial<Transaction>): Observable<ApiResponse<Transaction>> {
     return this.apiService.put<Transaction>(`/transactions/${id}`, transaction);
   }
 
-  // 取引を削除
   public deleteTransaction(id: string): Observable<ApiResponse<void>> {
     return this.apiService.delete<void>(`/transactions/${id}`);
   }
 
-  // 月間レポートを取得
   public getMonthlyResult(request: GetMonthlyResultRequest): Observable<ApiResponse<GetMonthlyResultResponse>> {
     return this.apiService.get<GetMonthlyResultResponse>(
       '/kakeibo/monthly-result',
       { userId: request.userId }
     ).pipe(
       map(response => {
-        // 開発中はモックデータを使用
+        // TODO: API実装後は削除
         response.data = this.generateMockMonthlyResult();
         return response;
       })
     );
   }
 
-  // モックの月別データを生成（開発用）
+  // TODO: API実装後は削除
   private generateMockMonthlyData(year: number, month: number): MonthlyDataResponse {
     const dailySummaries: DailySummary[] = [];
     const daysInMonth = new Date(year, month, 0).getDate();
 
-    // カテゴリのモックデータ
     const mockCategories: Category[] = [
       { id: '1', name: '給料', icon: 'payments', type: TransactionType.INCOME },
       { id: '2', name: '副業', icon: 'work', type: TransactionType.INCOME },
@@ -82,14 +72,11 @@ export class KakeiboService {
       { id: '6', name: '光熱費', icon: 'lightbulb', type: TransactionType.EXPENSE },
     ];
 
-    // 各日のデータを生成
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month - 1, day);
       const transactions: Transaction[] = [];
 
-      // ランダムに取引を生成（一部の日のみ）
       if (Math.random() > 0.5) {
-        // 収入（給料は月初のみ）
         if (day === 25) {
           transactions.push({
             id: `t-${year}-${month}-${day}-1`,
@@ -102,11 +89,9 @@ export class KakeiboService {
           });
         }
 
-        // 支出
         if (Math.random() > 0.3) {
-          const expenseCategory = mockCategories.filter(c => c.type === TransactionType.EXPENSE)[
-            Math.floor(Math.random() * 4)
-          ];
+          const expenseCategories = mockCategories.filter(c => c.type === TransactionType.EXPENSE);
+          const expenseCategory = expenseCategories[Math.floor(Math.random() * expenseCategories.length)];
           transactions.push({
             id: `t-${year}-${month}-${day}-2`,
             kakeiboId: '1',
@@ -119,7 +104,6 @@ export class KakeiboService {
         }
       }
 
-      // 収入と支出の合計を計算
       const income = transactions
         .filter(t => t.type === TransactionType.INCOME)
         .reduce((sum, t) => sum + t.amount, 0);
@@ -136,21 +120,19 @@ export class KakeiboService {
       });
     }
 
-    return {
-      year: year,
-      month: month,
-      dailySummaries: dailySummaries
-    };
+    return { year, month, dailySummaries };
   }
 
-  // モックの月間レポートデータを生成（開発用）
+  // TODO: API実装後は削除
   private generateMockMonthlyResult(): GetMonthlyResultResponse {
+    const formatMonth = (date: Date): string => {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    };
+
     const now = new Date();
-    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const lastMonthStr = `${lastMonth.getFullYear()}-${String(lastMonth.getMonth() + 1).padStart(2, '0')}`;
-    const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1);
-    const twoMonthsAgoStr = `${twoMonthsAgo.getFullYear()}-${String(twoMonthsAgo.getMonth() + 1).padStart(2, '0')}`;
+    const currentMonth = formatMonth(now);
+    const lastMonth = formatMonth(new Date(now.getFullYear(), now.getMonth() - 1));
+    const twoMonthsAgo = formatMonth(new Date(now.getFullYear(), now.getMonth() - 2));
 
     return {
       monthlyExpenses: [
@@ -165,7 +147,7 @@ export class KakeiboService {
           ]
         },
         {
-          usedMonth: lastMonthStr,
+          usedMonth: lastMonth,
           categoryReportItems: [
             { categoryName: '食費', totalAmount: 42000 },
             { categoryName: '交通費', totalAmount: 18000 },
@@ -175,7 +157,7 @@ export class KakeiboService {
           ]
         },
         {
-          usedMonth: twoMonthsAgoStr,
+          usedMonth: twoMonthsAgo,
           categoryReportItems: [
             { categoryName: '食費', totalAmount: 48000 },
             { categoryName: '交通費', totalAmount: 16000 },
@@ -194,14 +176,14 @@ export class KakeiboService {
           ]
         },
         {
-          usedMonth: lastMonthStr,
+          usedMonth: lastMonth,
           categoryReportItems: [
             { categoryName: '給料', totalAmount: 250000 },
             { categoryName: '副業', totalAmount: 25000 },
           ]
         },
         {
-          usedMonth: twoMonthsAgoStr,
+          usedMonth: twoMonthsAgo,
           categoryReportItems: [
             { categoryName: '給料', totalAmount: 250000 },
             { categoryName: '副業', totalAmount: 20000 },
