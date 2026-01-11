@@ -1,0 +1,23 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      # Node.jsのインストール
+      - npm install
+  pre_build:
+    commands:
+      # テストを実行する場合
+      # - npm run test
+      - echo 'Starting build...'
+  build:
+    commands:
+      # Angularのビルドコマンド
+      - npm run build -- --configuration=production
+      # distフォルダ内のプロジェクト名フォルダに成果物が出力されます
+artifacts:
+  files:
+    # dist/プロジェクト名/** の内容を成果物としてアップロード
+    - "**/*"
+  base-directory: dist/angular-app/browser
