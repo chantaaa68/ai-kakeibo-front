@@ -10,7 +10,9 @@ import {
   MonthlyDataResponse,
   DailySummary,
   TransactionType,
-  Category
+  Category,
+  GetMonthlyResultRequest,
+  GetMonthlyResultResponse
 } from '../models/kakeibo.model';
 
 @Injectable({
@@ -49,6 +51,20 @@ export class KakeiboService {
   // 取引を削除
   public deleteTransaction(id: string): Observable<ApiResponse<void>> {
     return this.apiService.delete<void>(`/transactions/${id}`);
+  }
+
+  // 月間レポートを取得
+  public getMonthlyResult(request: GetMonthlyResultRequest): Observable<ApiResponse<GetMonthlyResultResponse>> {
+    return this.apiService.get<GetMonthlyResultResponse>(
+      '/kakeibo/monthly-result',
+      { userId: request.userId }
+    ).pipe(
+      map(response => {
+        // 開発中はモックデータを使用
+        response.data = this.generateMockMonthlyResult();
+        return response;
+      })
+    );
   }
 
   // モックの月別データを生成（開発用）
@@ -124,6 +140,74 @@ export class KakeiboService {
       year: year,
       month: month,
       dailySummaries: dailySummaries
+    };
+  }
+
+  // モックの月間レポートデータを生成（開発用）
+  private generateMockMonthlyResult(): GetMonthlyResultResponse {
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthStr = `${lastMonth.getFullYear()}-${String(lastMonth.getMonth() + 1).padStart(2, '0')}`;
+    const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+    const twoMonthsAgoStr = `${twoMonthsAgo.getFullYear()}-${String(twoMonthsAgo.getMonth() + 1).padStart(2, '0')}`;
+
+    return {
+      monthlyExpenses: [
+        {
+          usedMonth: currentMonth,
+          categoryReportItems: [
+            { categoryName: '食費', totalAmount: 45000 },
+            { categoryName: '交通費', totalAmount: 15000 },
+            { categoryName: '娯楽', totalAmount: 20000 },
+            { categoryName: '光熱費', totalAmount: 12000 },
+            { categoryName: '通信費', totalAmount: 8000 },
+          ]
+        },
+        {
+          usedMonth: lastMonthStr,
+          categoryReportItems: [
+            { categoryName: '食費', totalAmount: 42000 },
+            { categoryName: '交通費', totalAmount: 18000 },
+            { categoryName: '娯楽', totalAmount: 15000 },
+            { categoryName: '光熱費', totalAmount: 11000 },
+            { categoryName: '通信費', totalAmount: 8000 },
+          ]
+        },
+        {
+          usedMonth: twoMonthsAgoStr,
+          categoryReportItems: [
+            { categoryName: '食費', totalAmount: 48000 },
+            { categoryName: '交通費', totalAmount: 16000 },
+            { categoryName: '娯楽', totalAmount: 25000 },
+            { categoryName: '光熱費', totalAmount: 13000 },
+            { categoryName: '通信費', totalAmount: 8000 },
+          ]
+        }
+      ],
+      monthlyIncomes: [
+        {
+          usedMonth: currentMonth,
+          categoryReportItems: [
+            { categoryName: '給料', totalAmount: 250000 },
+            { categoryName: '副業', totalAmount: 30000 },
+          ]
+        },
+        {
+          usedMonth: lastMonthStr,
+          categoryReportItems: [
+            { categoryName: '給料', totalAmount: 250000 },
+            { categoryName: '副業', totalAmount: 25000 },
+          ]
+        },
+        {
+          usedMonth: twoMonthsAgoStr,
+          categoryReportItems: [
+            { categoryName: '給料', totalAmount: 250000 },
+            { categoryName: '副業', totalAmount: 20000 },
+          ]
+        }
+      ]
     };
   }
 }
