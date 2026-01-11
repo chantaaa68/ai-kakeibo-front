@@ -1,0 +1,35 @@
+<div class="transaction-list-container">
+  <div *ngIf="selectedDate" class="list-header">
+    <h3>{{ formatDate(selectedDate) }}の明細</h3>
+    <p class="text-muted">{{ transactions.length }}件の取引</p>
+  </div>
+
+  <div *ngIf="!selectedDate" class="empty-state">
+    <p class="text-muted">日付を選択して明細を表示</p>
+  </div>
+
+  <div *ngIf="selectedDate && transactions.length === 0" class="empty-state">
+    <p class="text-muted">この日の取引はありません</p>
+  </div>
+
+  <div *ngIf="transactions.length > 0" class="transactions-scroll">
+    <div *ngFor="let transaction of transactions" class="transaction-item card">
+      <mat-icon class="transaction-icon">{{ transaction.category.icon }}</mat-icon>
+      <div class="transaction-info">
+        <div class="transaction-name">{{ transaction.name }}</div>
+        <div class="transaction-category text-muted">
+          {{ transaction.category.name }}
+        </div>
+      </div>
+      <div class="transaction-amount"
+           [ngClass]="{
+             'text-income': transaction.type === TransactionType.INCOME,
+             'text-expense': transaction.type === TransactionType.EXPENSE
+           }">
+        <span *ngIf="transaction.type === TransactionType.INCOME">+</span>
+        <span *ngIf="transaction.type === TransactionType.EXPENSE">-</span>
+        {{ formatAmount(transaction.amount) }}円
+      </div>
+    </div>
+  </div>
+</div>

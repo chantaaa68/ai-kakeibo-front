@@ -1,0 +1,65 @@
+// プロフィール画面のスタイル（登録画面と同様）
+.profile-container {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-xl) 0;
+  background-color: var(--color-bg);
+}
+
+.profile-card {
+  max-width: 100%;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+
+  h2 {
+    margin-bottom: var(--spacing-sm);
+  }
+}
+
+.success-alert {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  background-color: #d4edda;
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-md);
+  color: var(--color-success);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.error-alert {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  background-color: #fee;
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+}
+
+.password-section {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+
+  h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  p {
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+}
+
+.form-actions {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}

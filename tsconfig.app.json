@@ -1,0 +1,15 @@
+/* TypeScript設定ファイルの詳細: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html */
+/* Angularコンパイラオプションの詳細: https://angular.dev/reference/configs/angular-compiler-options */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": []
+  },
+  "files": [
+    "src/main.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}

@@ -1,0 +1,93 @@
+// カテゴリ一覧ページのスタイル
+.categories-container {
+  min-height: calc(100vh - 70px);
+  background-color: var(--color-bg);
+}
+
+.categories-content {
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+
+  h2 {
+    margin: 0;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+
+    .material-icons {
+      font-size: 18px;
+    }
+  }
+}
+
+.loading-state {
+  text-align: center;
+  padding: var(--spacing-2xl);
+
+  p {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+  }
+}
+
+.type-switcher {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+  justify-content: center;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-2xl);
+
+  .empty-icon {
+    font-size: 64px;
+    color: var(--color-gray-400);
+    margin-bottom: var(--spacing-md);
+  }
+
+  p {
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text-secondary);
+  }
+}
+
+// レスポンシブ対応
+@media (max-width: 768px) {
+  .categories-header {
+    .header-content {
+      flex-direction: column;
+      gap: var(--spacing-md);
+      text-align: center;
+
+      h1 {
+        font-size: var(--font-size-xl);
+      }
+    }
+  }
+
+  .categories-content {
+    padding: var(--spacing-md);
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-sm);
+  }
+}

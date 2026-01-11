@@ -1,0 +1,118 @@
+// トランザクションリストコンポーネントのスタイル
+.transaction-list-container {
+  background-color: var(--color-bg-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+}
+
+.list-header {
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+
+  h3 {
+    margin-bottom: var(--spacing-xs);
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl);
+
+  p {
+    margin: 0;
+  }
+}
+
+.transactions-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+
+  /* スクロールバーのスタイリング */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-gray-400);
+    border-radius: var(--radius-sm);
+
+    &:hover {
+      background: var(--color-gray-500);
+    }
+  }
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.transaction-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.transaction-info {
+  flex: 1;
+  min-width: 0;
+
+  .transaction-name {
+    font-weight: var(--font-weight-medium);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .transaction-category {
+    font-size: var(--font-size-sm);
+  }
+}
+
+.transaction-amount {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+// レスポンシブ対応
+@media (max-width: 768px) {
+  .transaction-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .transaction-amount {
+    font-size: var(--font-size-md);
+  }
+
+  .transactions-scroll {
+    max-height: 300px;
+  }
+}
