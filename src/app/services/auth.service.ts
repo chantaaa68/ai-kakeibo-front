@@ -19,24 +19,9 @@ export class AuthService {
 
   // ログイン
   public login(request: LoginRequest): Observable<ApiResponse<LoginResponse>> {
-    // モックデータ
-    const mockUser: User = {
-      id: '1',
-      name: 'テストユーザー',
-      email: request.email
-    };
-
-    const mockResponse: LoginResponse = {
-      user: mockUser,
-      token: 'mock-jwt-token-12345'
-    };
-
-    return this.apiService.post<LoginResponse>('/auth/login', request).pipe(
+    return this.apiService.post<LoginResponse>('/User/Login', request).pipe(
       map(response => {
-        // 開発中はモックデータを使用
-        response.data = mockResponse;
-
-        if (response.status) {
+        if (response.status && response.data) {
           this.currentUser = response.data.user;
           this.token = response.data.token;
           this.saveAuthData();
@@ -48,24 +33,9 @@ export class AuthService {
 
   // 新規登録
   public register(request: RegisterRequest): Observable<ApiResponse<LoginResponse>> {
-    // モックデータ
-    const mockUser: User = {
-      id: '1',
-      name: request.name,
-      email: request.email
-    };
-
-    const mockResponse: LoginResponse = {
-      user: mockUser,
-      token: 'mock-jwt-token-12345'
-    };
-
-    return this.apiService.post<LoginResponse>('/auth/register', request).pipe(
+    return this.apiService.post<LoginResponse>('/User/Regist', request).pipe(
       map(response => {
-        // 開発中はモックデータを使用
-        response.data = mockResponse;
-
-        if (response.status) {
+        if (response.status && response.data) {
           this.currentUser = response.data.user;
           this.token = response.data.token;
           this.saveAuthData();

@@ -25,25 +25,16 @@ export class UserService {
 
   // ユーザー情報を更新
   public updateUser(userId: string, request: UpdateUserRequest): Observable<ApiResponse<User>> {
-    // モックレスポンス
     const currentUser = this.authService.getCurrentUser();
-    const updatedUser: User = {
-      id: userId,
-      name: request.name || currentUser?.name || '',
-      email: request.email || currentUser?.email || ''
-    };
 
-    return this.apiService.put<User>(`/users/${userId}`, request).pipe(
+    return this.apiService.post<User>('/User/Update', request).pipe(
       map(response => {
-        // 開発中はモックデータを使用
-        response.data = updatedUser;
-
         // 認証サービスのユーザー情報も更新
-        if (response.status && currentUser) {
+        if (response.status && response.data && currentUser) {
           const newUserData: User = {
             ...currentUser,
-            name: updatedUser.name,
-            email: updatedUser.email
+            name: response.data.name,
+            email: response.data.email
           };
           // ローカルストレージを直接更新
           localStorage.setItem('currentUser', JSON.stringify(newUserData));
@@ -56,16 +47,6 @@ export class UserService {
 
   // ユーザー情報を取得
   public getUser(userId: string): Observable<ApiResponse<User>> {
-    const currentUser = this.authService.getCurrentUser();
-    
-    return this.apiService.get<User>(`/users/${userId}`).pipe(
-      map(response => {
-        // 開発中はモックデータを使用
-        if (currentUser) {
-          response.data = currentUser;
-        }
-        return response;
-      })
-    );
+    return this.apiService.post<User>('/User/GetUserData', { userId });
   }
 }

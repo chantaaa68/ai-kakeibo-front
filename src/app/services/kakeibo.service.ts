@@ -21,34 +21,37 @@ export class KakeiboService {
 
   // 月別データを取得
   public getMonthlyData(request: MonthlyDataRequest): Observable<ApiResponse<MonthlyDataResponse>> {
-    // モックデータを生成
-    const mockData = this.generateMockMonthlyData(request.year, request.month);
+    return this.apiService.post<MonthlyDataResponse>('/kakeibo/GetMonthlyResult', request);
+  }
 
-    return this.apiService.get<MonthlyDataResponse>(
-      `/kakeibo/${request.kakeiboId}/monthly`,
-      { year: request.year, month: request.month }
-    ).pipe(
-      map(response => {
-        // 開発中はモックデータを使用
-        response.data = mockData;
-        return response;
-      })
-    );
+  // 家計簿項目一覧を取得
+  public getKakeiboItemList(kakeiboId: string): Observable<ApiResponse<Transaction[]>> {
+    return this.apiService.post<Transaction[]>('/kakeibo/GetKakeiboItemList', { kakeiboId });
+  }
+
+  // 家計簿項目詳細を取得
+  public getKakeiboItemDetail(itemId: string): Observable<ApiResponse<Transaction>> {
+    return this.apiService.post<Transaction>('/kakeibo/GetKakeiboItemDetail', { itemId });
   }
 
   // 取引を作成
   public createTransaction(transaction: Partial<Transaction>): Observable<ApiResponse<Transaction>> {
-    return this.apiService.post<Transaction>('/transactions', transaction);
+    return this.apiService.post<Transaction>('/kakeibo/RegistKakeiboItem', transaction);
   }
 
   // 取引を更新
   public updateTransaction(id: string, transaction: Partial<Transaction>): Observable<ApiResponse<Transaction>> {
-    return this.apiService.put<Transaction>(`/transactions/${id}`, transaction);
+    return this.apiService.post<Transaction>('/kakeibo/UpdateKakeiboItem', { id, ...transaction });
   }
 
   // 取引を削除
   public deleteTransaction(id: string): Observable<ApiResponse<void>> {
-    return this.apiService.delete<void>(`/transactions/${id}`);
+    return this.apiService.post<void>('/kakeibo/DeleteKakeiboItem', { id });
+  }
+
+  // 家計簿を更新
+  public updateKakeibo(kakeiboId: string, data: Partial<Kakeibo>): Observable<ApiResponse<Kakeibo>> {
+    return this.apiService.post<Kakeibo>('/kakeibo/UpdateKakeibo', { kakeiboId, ...data });
   }
 
   // モックの月別データを生成（開発用）
