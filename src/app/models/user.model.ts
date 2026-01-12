@@ -8,7 +8,7 @@ export interface User {
 // ログインリクエスト
 export interface LoginRequest {
   email: string;
-  password: string;
+  userHash: string;
 }
 
 // ログインレスポンス
