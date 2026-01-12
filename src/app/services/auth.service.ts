@@ -19,7 +19,7 @@ export class AuthService {
 
   // ログイン
   public login(request: LoginRequest): Observable<ApiResponse<LoginResponse>> {
-    return this.apiService.post<LoginResponse>('/auth/login', request).pipe(
+    return this.apiService.post<LoginResponse>('/User/Login', request).pipe(
       tap(response => {
         if (response.status && response.data) {
           this.currentUser = response.data.user;
@@ -32,7 +32,7 @@ export class AuthService {
 
   // 新規登録
   public register(request: RegisterRequest): Observable<ApiResponse<LoginResponse>> {
-    return this.apiService.post<LoginResponse>('/auth/register', request).pipe(
+    return this.apiService.post<LoginResponse>('/User/Regist', request).pipe(
       tap(response => {
         if (response.status && response.data) {
           this.currentUser = response.data.user;

@@ -16,26 +16,27 @@ export class CategoryService {
 
   // カテゴリ一覧を取得
   public getCategories(userId: string): Observable<ApiResponse<Category[]>> {
-    return this.apiService.get<Category[]>('/categories', { userId });
+    return this.apiService.post<Category[]>('/category/GetCategoryData', { userId });
   }
 
   // カテゴリを作成
   public createCategory(request: CreateCategoryRequest): Observable<ApiResponse<Category>> {
-    return this.apiService.post<Category>('/categories', request);
+    return this.apiService.post<Category>('/category/RegistCategory', request);
   }
 
   // カテゴリを更新
   public updateCategory(id: string, request: Partial<CreateCategoryRequest>): Observable<ApiResponse<Category>> {
-    return this.apiService.put<Category>(`/categories/${id}`, request);
+    return this.apiService.post<Category>('/category/UpdateCategory', { id, ...request });
   }
 
-  // カテゴリを削除
+  // カテゴリを削除（バックエンド未実装のため現在は使用不可）
   public deleteCategory(id: string): Observable<ApiResponse<void>> {
-    return this.apiService.delete<void>(`/categories/${id}`);
+    // TODO: バックエンドに削除APIが実装されたら修正
+    throw new Error('カテゴリ削除機能は現在バックエンドで実装されていません');
   }
 
   // 利用可能なアイコン一覧を取得
   public getAvailableIcons(): Observable<ApiResponse<AvailableIcon[]>> {
-    return this.apiService.get<AvailableIcon[]>('/icons');
+    return this.apiService.get<AvailableIcon[]>('/icon/GetIconList');
   }
 }

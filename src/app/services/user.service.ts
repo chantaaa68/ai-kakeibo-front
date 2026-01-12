@@ -25,11 +25,19 @@ export class UserService {
 
   // ユーザー情報を更新
   public updateUser(userId: string, request: UpdateUserRequest): Observable<ApiResponse<User>> {
-    return this.apiService.put<User>(`/users/${userId}`, request).pipe(
+    const currentUser = this.authService.getCurrentUser();
+
+    return this.apiService.post<User>('/User/Update', request).pipe(
       tap(response => {
-        // 成功時、ローカルストレージのユーザー情報も更新
-        if (response.status && response.data) {
-          localStorage.setItem('currentUser', JSON.stringify(response.data));
+        // 認証サービスのユーザー情報も更新
+        if (response.status && response.data && currentUser) {
+          const newUserData: User = {
+            ...currentUser,
+            name: response.data.name,
+            email: response.data.email
+          };
+          // ローカルストレージを直接更新
+          localStorage.setItem('currentUser', JSON.stringify(newUserData));
         }
       })
     );
@@ -37,6 +45,6 @@ export class UserService {
 
   // ユーザー情報を取得
   public getUser(userId: string): Observable<ApiResponse<User>> {
-    return this.apiService.get<User>(`/users/${userId}`);
+    return this.apiService.post<User>('/User/GetUserData', { userId });
   }
 }
