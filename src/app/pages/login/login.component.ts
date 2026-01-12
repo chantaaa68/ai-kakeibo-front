@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { LoginRequest } from '../../models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -53,12 +52,10 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = null;
 
-    const request: LoginRequest = {
-      email: this.loginForm.value.email,
-      password: this.loginForm.value.password
-    };
+    const email = this.loginForm.value.email;
+    const password = this.loginForm.value.password;
 
-    this.authService.login(request).subscribe({
+    this.authService.login(email, password).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response.status) {

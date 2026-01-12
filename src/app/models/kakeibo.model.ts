@@ -1,95 +1,185 @@
-// 家計簿情報
+// 家計簿情報（バックエンドDTO）
 export interface Kakeibo {
-  id: string;
-  userId: string;
-  description?: string;
-  createdAt: Date;
+  id: number;
+  kakeiboName: string;
+  kakeiboExplanation: string;
 }
 
-// 取引種別
-export enum TransactionType {
-  INCOME = 'income',   // 収入
-  EXPENSE = 'expense'  // 支出
+// カテゴリ情報（バックエンドDTO）
+export interface CategoryItem {
+  id: number;
+  categoryName: string;
+  inoutFlg: boolean;  // true=収入、false=支出
+  iconName: string;
 }
 
-// カテゴリ情報
-export interface Category {
-  id: string;
-  name: string;
-  icon: string;
-  type: TransactionType;
+// カテゴリ取得リクエスト（バックエンドDTO）
+export interface GetCategoryDataRequest {
+  userId: number;
+  defaultFlg: boolean;  // true=デフォルトカテゴリ、false=ユーザーカテゴリ
 }
 
-// 取引情報
-export interface Transaction {
-  id: string;
-  kakeiboId: string;
-  date: Date;
-  name: string;
-  amount: number;
-  type: TransactionType;
-  category: Category;
+// カテゴリ取得レスポンス（バックエンドDTO）
+export interface GetCategoryDataResponse {
+  categories: CategoryItem[] | null;
 }
 
-// 日別の集計データ
-export interface DailySummary {
-  date: Date;
-  income: number;   // 収入合計
-  expense: number;  // 支出合計
-  transactions: Transaction[];
+// カテゴリ登録リクエスト（バックエンドDTO）
+export interface RegistCategoryRequest {
+  userId: number;
+  categoryName: string;
+  inoutFlg: boolean;
+  iconName: string;
 }
 
-// 月別データ取得リクエスト
-export interface MonthlyDataRequest {
-  kakeiboId: string;
-  year: number;
-  month: number;
+// カテゴリ登録レスポンス（バックエンドDTO）
+export interface RegistCategoryResponse {
+  categoryId: number;
 }
 
-// 月別データレスポンス
-export interface MonthlyDataResponse {
-  year: number;
-  month: number;
-  dailySummaries: DailySummary[];
+// カテゴリ更新リクエスト（バックエンドDTO）
+export interface UpdateCategoryRequest {
+  id: number;
+  categoryName?: string | null;
+  inoutFlg?: boolean | null;
+  iconName?: string | null;
 }
 
-// カテゴリ作成リクエスト
-export interface CreateCategoryRequest {
-  name: string;
-  icon: string;
-  type: TransactionType;
-  userId: string;
+// カテゴリ更新レスポンス（バックエンドDTO）
+export interface UpdateCategoryResponse {
+  categoryId: number;
 }
 
-// 利用可能なアイコン情報
-export interface AvailableIcon {
-  id: string;
-  name: string;           // アイコン名（例：shopping_cart）
-  displayName: string;    // 表示名（例：買い物）
-  category: string;       // カテゴリ（例：shopping, food, transportなど）
+// 利用可能なアイコン情報（バックエンドDTO）
+export interface IconData {
+  iconId: number;
+  officialIconName: string;
+  defaultIconName: string;
 }
 
-// ===== 月間レポート関連 =====
+// アイコンリスト取得レスポンス（バックエンドDTO）
+export interface GetIconListResponse {
+  iconDatas: IconData[];
+}
+
+// 取引情報（バックエンドDTO）
+export interface KakeiboItem {
+  itemId: number;
+  itemName: string;
+  itemAmount: number;
+  inoutFlg: boolean;  // true=収入、false=支出
+  usedDate: string;   // DateTime形式
+  iconName: string;
+}
+
+// 日別取引情報（バックエンドDTO）
+export interface KakeiboItemInfo {
+  dayNo: number;
+  items: KakeiboItem[];
+}
+
+// 取引一覧取得リクエスト（バックエンドDTO）
+export interface GetKakeiboItemListRequest {
+  userId: number;
+  range: string;  // "yyyy-MM"形式
+}
+
+// 取引一覧取得レスポンス（バックエンドDTO）
+export interface GetKakeiboItemListResponse {
+  kakeiboItemInfos: KakeiboItemInfo[];
+}
+
+// 取引詳細取得リクエスト（バックエンドDTO）
+export interface GetKakeiboItemDetailRequest {
+  itemId: number;
+}
+
+// 取引詳細取得レスポンス（バックエンドDTO）
+export interface GetKakeiboItemDetailResponse {
+  itemName: string;
+  itemAmount: number;
+  inoutFlg: boolean;
+  usedDate: string;   // DateTime形式
+  categoryId: number;
+}
+
+// 取引登録リクエスト（バックエンドDTO）
+export interface RegistKakeiboItemRequest {
+  kakeiboId: number;
+  itemName: string;
+  itemAmount: number;
+  inoutFlg: boolean;
+  usedDate: string;    // DateTime形式
+  categoryId: number;
+  frequency: number;   // 0-11 (0=なし、1=毎日、2=毎週、3=隔週、4=毎月、5=隔月、6=3ヶ月、7=6ヶ月、8=毎年、9=2年、10=3年、11=カスタム)
+  fixedEndDate?: string | null;  // DateTime形式
+}
+
+// 取引登録レスポンス（バックエンドDTO）
+export interface RegistKakeiboItemResponse {
+  count: number;
+}
+
+// 取引更新リクエスト（バックエンドDTO）
+export interface UpdateKakeiboItemRequest {
+  itemId: number;
+  categoryId: number;
+  itemName: string;
+  itemAmount: number;
+  inoutFlg: boolean;
+  usedDate: string;    // DateTime形式
+  changeFlg: boolean;  // 繰り返し設定の変更フラグ
+}
+
+// 取引更新レスポンス（バックエンドDTO）
+export interface UpdateKakeiboItemResponse {
+  count: number;
+}
+
+// 取引削除リクエスト（バックエンドDTO）
+export interface DeleteKakeiboItemRequest {
+  id: number;
+}
+
+// 取引削除レスポンス（バックエンドDTO）
+export interface DeleteKakeiboItemResponse {
+  count: number;
+}
+
+// 家計簿更新リクエスト（バックエンドDTO）
+export interface UpdateKakeiboRequest {
+  id: number;
+  kakeiboName?: string | null;
+  kakeiboExplanation?: string | null;
+}
+
+// 家計簿更新レスポンス（バックエンドDTO）
+export interface UpdateKakeiboResponse {
+  count: number;
+}
+
+// ===== 月間レポート関連（バックエンドDTO） =====
 
 // カテゴリ別レポートアイテム
 export interface CategoryReportItem {
-  categoryName: string;   // カテゴリ名
-  totalAmount: number;    // カテゴリごとの合計金額
+  categoryName: string;
+  iconName: string;
+  totalAmount: number;
 }
 
 // 月間レポートアイテム
 export interface MonthlyReportItem {
-  usedMonth: string;                         // 集計月(yyyy-mm)
-  categoryReportItems: CategoryReportItem[]; // 集計月別データ
+  usedMonth: string;  // "yyyy-MM"形式
+  categoryReportItems: CategoryReportItem[];
 }
 
 // 月間レポート取得リクエスト
 export interface GetMonthlyResultRequest {
-  userId: number;         // ユーザーID
+  userId: number;
 }
 
 // 月間レポート取得レスポンス
 export interface GetMonthlyResultResponse {
-  monthlyExpenses: MonthlyReportItem[]; // 各カテゴリごとの支出合計データ
-  monthlyIncomes: MonthlyReportItem[];  // 各カテゴリごとの収入合計データ
+  monthlyExpenses: MonthlyReportItem[];
+  monthlyIncomes: MonthlyReportItem[];
 }

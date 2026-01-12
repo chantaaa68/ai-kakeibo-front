@@ -122,7 +122,14 @@ export class CategoryDetailComponent implements OnInit {
   private loadCategoryTrend(categoryId: string): void {
     this.isLoading.set(true);
 
-    this.reportService.getCategoryTrend(categoryId).subscribe({
+    const categoryIdNum = parseInt(categoryId, 10);
+    if (isNaN(categoryIdNum)) {
+      this.errorMessage.set('無効なカテゴリIDです');
+      this.isLoading.set(false);
+      return;
+    }
+
+    this.reportService.getCategoryTrend(categoryIdNum).subscribe({
       next: (data) => {
         this.allData.set(data);
 

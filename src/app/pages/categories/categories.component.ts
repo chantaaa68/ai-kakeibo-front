@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { CategoryService } from '../../services/category.service';
 import { CategoryItemComponent } from '../../shared/components/category-item/category-item.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
-import { Category, TransactionType } from '../../models/kakeibo.model';
+import { CategoryItem } from '../../models/kakeibo.model';
 
 @Component({
   selector: 'app-categories',
@@ -15,11 +15,10 @@ import { Category, TransactionType } from '../../models/kakeibo.model';
   styleUrl: './categories.component.scss'
 })
 export class CategoriesComponent implements OnInit {
-  public categories: Category[] = [];
-  public displayedCategories: Category[] = [];
-  public selectedType: TransactionType = TransactionType.EXPENSE;
+  public categories: CategoryItem[] = [];
+  public displayedCategories: CategoryItem[] = [];
+  public selectedInoutFlg: boolean = false; // false=支出、true=収入
   public isLoading = true;
-  public TransactionType = TransactionType;
 
   constructor(
     private authService: AuthService,
@@ -47,11 +46,11 @@ export class CategoriesComponent implements OnInit {
       return;
     }
 
-    this.categoryService.getCategories(user.id).subscribe({
+    this.categoryService.getCategories(user.userId, false).subscribe({
       next: (response) => {
         this.isLoading = false;
-        if (response.status && response.data) {
-          this.categories = response.data;
+        if (response.status && response.result && response.result.categories) {
+          this.categories = response.result.categories;
           this.filterCategories();
         }
       },
@@ -65,13 +64,13 @@ export class CategoriesComponent implements OnInit {
   // 表示するカテゴリをフィルタリング
   private filterCategories(): void {
     this.displayedCategories = this.categories.filter(
-      category => category.type === this.selectedType
+      category => category.inoutFlg === this.selectedInoutFlg
     );
   }
 
   // タイプを変更
-  public changeType(type: TransactionType): void {
-    this.selectedType = type;
+  public changeType(inoutFlg: boolean): void {
+    this.selectedInoutFlg = inoutFlg;
     this.filterCategories();
   }
 

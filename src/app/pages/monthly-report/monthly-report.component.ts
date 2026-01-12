@@ -13,8 +13,7 @@ import { TransactionListComponent } from '../kakeibo/components/transaction-list
 import {
   GetMonthlyResultResponse,
   MonthlyReportItem,
-  TransactionType,
-  Transaction
+  KakeiboItem
 } from '../../models/kakeibo.model';
 
 // カテゴリアイコンマッピング定数
@@ -53,7 +52,7 @@ export class MonthlyReportComponent implements OnInit {
   public chartData: Array<{ name: string; value: number }> = [];
   public colorScheme = 'vivid';
   public selectedCategory: string | null = null;
-  public selectedTransactions: Transaction[] = [];
+  public selectedTransactions: KakeiboItem[] = [];
   public isLoading = true;
 
   constructor(
@@ -119,12 +118,12 @@ export class MonthlyReportComponent implements OnInit {
     }
 
     this.kakeiboService.getMonthlyResult({
-      userId: parseInt(user.id, 10)
+      userId: user.userId
     }).subscribe({
       next: (response) => {
         this.isLoading = false;
-        if (response.status && response.data) {
-          this.monthlyData = response.data;
+        if (response.status && response.result) {
+          this.monthlyData = response.result;
           this.initializeMonthSelection();
         }
       },
@@ -175,13 +174,11 @@ export class MonthlyReportComponent implements OnInit {
   }
 
   // TODO: API実装後は削除
-  private generateMockTransactions(categoryName: string): Transaction[] {
-    const type = this.displayType === 'expense'
-      ? TransactionType.EXPENSE
-      : TransactionType.INCOME;
-    const icon = this.getCategoryIcon(categoryName);
+  private generateMockTransactions(categoryName: string): KakeiboItem[] {
+    const inoutFlg = this.displayType === 'income'; // true=収入、false=支出
+    const iconName = this.getCategoryIcon(categoryName);
     const numTransactions = Math.floor(Math.random() * 5) + 3;
-    const mockTransactions: Transaction[] = [];
+    const mockTransactions: KakeiboItem[] = [];
 
     for (let i = 0; i < numTransactions; i++) {
       const day = Math.floor(Math.random() * 28) + 1;
@@ -189,21 +186,17 @@ export class MonthlyReportComponent implements OnInit {
       const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, day);
 
       mockTransactions.push({
-        id: `mock-${i}`,
-        kakeiboId: '1',
-        date: date,
-        name: `${categoryName}の支払い ${i + 1}`,
-        amount: Math.floor(Math.random() * 5000) + 500,
-        type: type,
-        category: {
-          id: `cat-${i}`,
-          name: categoryName,
-          icon: icon,
-          type: type
-        }
+        itemId: i,
+        itemName: `${categoryName}の支払い ${i + 1}`,
+        itemAmount: Math.floor(Math.random() * 5000) + 500,
+        inoutFlg: inoutFlg,
+        usedDate: date.toISOString(),
+        iconName: iconName
       });
     }
 
-    return mockTransactions.sort((a, b) => a.date.getTime() - b.date.getTime());
+    return mockTransactions.sort((a, b) =>
+      new Date(a.usedDate).getTime() - new Date(b.usedDate).getTime()
+    );
   }
 }

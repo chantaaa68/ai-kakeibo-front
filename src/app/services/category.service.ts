@@ -3,9 +3,13 @@ import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { ApiResponse } from '../models/api-response.model';
 import {
-  Category,
-  CreateCategoryRequest,
-  AvailableIcon
+  GetCategoryDataRequest,
+  GetCategoryDataResponse,
+  RegistCategoryRequest,
+  RegistCategoryResponse,
+  UpdateCategoryRequest,
+  UpdateCategoryResponse,
+  GetIconListResponse
 } from '../models/kakeibo.model';
 
 @Injectable({
@@ -15,28 +19,26 @@ export class CategoryService {
   constructor(private apiService: ApiService) {}
 
   // カテゴリ一覧を取得
-  public getCategories(userId: string): Observable<ApiResponse<Category[]>> {
-    return this.apiService.post<Category[]>('/category/GetCategoryData', { userId });
+  public getCategories(
+    userId: number,
+    defaultFlg: boolean = false
+  ): Observable<ApiResponse<GetCategoryDataResponse>> {
+    const request: GetCategoryDataRequest = { userId, defaultFlg };
+    return this.apiService.post<GetCategoryDataResponse>('/category/GetCategoryData', request);
   }
 
   // カテゴリを作成
-  public createCategory(request: CreateCategoryRequest): Observable<ApiResponse<Category>> {
-    return this.apiService.post<Category>('/category/RegistCategory', request);
+  public createCategory(request: RegistCategoryRequest): Observable<ApiResponse<RegistCategoryResponse>> {
+    return this.apiService.post<RegistCategoryResponse>('/category/RegistCategory', request);
   }
 
   // カテゴリを更新
-  public updateCategory(id: string, request: Partial<CreateCategoryRequest>): Observable<ApiResponse<Category>> {
-    return this.apiService.post<Category>('/category/UpdateCategory', { id, ...request });
-  }
-
-  // カテゴリを削除（バックエンド未実装のため現在は使用不可）
-  public deleteCategory(id: string): Observable<ApiResponse<void>> {
-    // TODO: バックエンドに削除APIが実装されたら修正
-    throw new Error('カテゴリ削除機能は現在バックエンドで実装されていません');
+  public updateCategory(request: UpdateCategoryRequest): Observable<ApiResponse<UpdateCategoryResponse>> {
+    return this.apiService.post<UpdateCategoryResponse>('/category/UpdateCategory', request);
   }
 
   // 利用可能なアイコン一覧を取得
-  public getAvailableIcons(): Observable<ApiResponse<AvailableIcon[]>> {
-    return this.apiService.get<AvailableIcon[]>('/icon/GetIconList');
+  public getAvailableIcons(): Observable<ApiResponse<GetIconListResponse>> {
+    return this.apiService.get<GetIconListResponse>('/icon/GetIconList');
   }
 }

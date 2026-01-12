@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { ApiResponse } from '../models/api-response.model';
-import { User, LoginRequest, LoginResponse, RegisterRequest } from '../models/user.model';
+import {
+  User,
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+  GetUserDataRequest
+} from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,27 +24,44 @@ export class AuthService {
     this.loadAuthData();
   }
 
-  // ログイン
-  public login(request: LoginRequest): Observable<ApiResponse<LoginResponse>> {
+  // ログイン（パスワードをハッシュ化してバックエンドに送信）
+  public login(email: string, password: string): Observable<ApiResponse<LoginResponse>> {
+    const userHash = this.hashPassword(password);
+    const request: LoginRequest = { email, userHash };
+
     return this.apiService.post<LoginResponse>('/User/Login', request).pipe(
       tap(response => {
-        if (response.status && response.data) {
-          this.currentUser = response.data.user;
-          this.token = response.data.token;
-          this.saveAuthData();
+        if (response.status && response.result) {
+          // ユーザー情報を取得してから保存
+          this.token = response.result.token;
+          this.fetchAndSaveUserData(response.result.userId, response.result.kakeiboId);
         }
       })
     );
   }
 
-  // 新規登録
-  public register(request: RegisterRequest): Observable<ApiResponse<LoginResponse>> {
-    return this.apiService.post<LoginResponse>('/User/Regist', request).pipe(
+  // 新規登録（パスワードをハッシュ化してバックエンドに送信）
+  public register(
+    userName: string,
+    email: string,
+    password: string,
+    kakeiboName: string,
+    kakeiboExplanation: string
+  ): Observable<ApiResponse<RegisterResponse>> {
+    const userHash = this.hashPassword(password);
+    const request: RegisterRequest = {
+      userName,
+      userHash,
+      email,
+      kakeiboName,
+      kakeiboExplanation
+    };
+
+    return this.apiService.post<RegisterResponse>('/User/Regist', request).pipe(
       tap(response => {
-        if (response.status && response.data) {
-          this.currentUser = response.data.user;
-          this.token = response.data.token;
-          this.saveAuthData();
+        if (response.status && response.result) {
+          // 登録後、自動的にログイン処理を行う
+          this.login(email, password).subscribe();
         }
       })
     );
@@ -65,6 +89,24 @@ export class AuthService {
     return this.currentUser !== null && this.token !== null;
   }
 
+  // ユーザー情報を取得して保存
+  private fetchAndSaveUserData(userId: number, kakeiboId: number): void {
+    const request: GetUserDataRequest = { userId };
+    this.apiService.post<any>('/User/GetUserData', request).subscribe(response => {
+      if (response.status && response.result) {
+        this.currentUser = {
+          userId,
+          userName: response.result.userName,
+          email: response.result.email,
+          kakeiboId,
+          kakeiboName: response.result.kakeiboName,
+          kakeiboExplanation: response.result.kakeiboExplanation
+        };
+        this.saveAuthData();
+      }
+    });
+  }
+
   // 認証情報をローカルストレージに保存
   private saveAuthData(): void {
     if (this.currentUser && this.token) {
@@ -88,5 +130,12 @@ export class AuthService {
   private clearAuthData(): void {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
+  }
+
+  // パスワードをSHA-256でハッシュ化
+  private hashPassword(password: string): string {
+    // 簡易的なハッシュ化（実装は後で crypto-js などを使って実装）
+    // TODO: crypto-js を使用した SHA-256 ハッシュ化を実装
+    return btoa(password); // 暫定的に Base64 エンコードを使用
   }
 }

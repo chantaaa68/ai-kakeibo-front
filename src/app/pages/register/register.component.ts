@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { RegisterRequest } from '../../models/user.model';
 
 @Component({
   selector: 'app-register',
@@ -29,7 +28,8 @@ export class RegisterComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
-      kakeiboDescription: [''] // 任意項目
+      kakeiboName: ['My家計簿', [Validators.required]], // 家計簿名（必須）
+      kakeiboDescription: [''] // 家計簿説明（任意項目）
     }, {
       validators: this.passwordMatchValidator
     });
@@ -50,6 +50,10 @@ export class RegisterComponent implements OnInit {
 
   public get confirmPassword() {
     return this.registerForm.get('confirmPassword');
+  }
+
+  public get kakeiboName() {
+    return this.registerForm.get('kakeiboName');
   }
 
   public get kakeiboDescription() {
@@ -86,14 +90,13 @@ export class RegisterComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = null;
 
-    const request: RegisterRequest = {
-      name: this.registerForm.value.name,
-      email: this.registerForm.value.email,
-      password: this.registerForm.value.password,
-      kakeiboDescription: this.registerForm.value.kakeiboDescription || undefined
-    };
+    const userName = this.registerForm.value.name;
+    const email = this.registerForm.value.email;
+    const password = this.registerForm.value.password;
+    const kakeiboName = this.registerForm.value.kakeiboName;
+    const kakeiboExplanation = this.registerForm.value.kakeiboDescription || '';
 
-    this.authService.register(request).subscribe({
+    this.authService.register(userName, email, password, kakeiboName, kakeiboExplanation).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response.status) {

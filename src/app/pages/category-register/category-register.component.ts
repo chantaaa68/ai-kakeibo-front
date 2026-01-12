@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
 import { CategoryService } from '../../services/category.service';
 import { HeaderComponent } from '../../shared/components/header/header.component';
-import { CreateCategoryRequest, AvailableIcon, TransactionType } from '../../models/kakeibo.model';
+import { RegistCategoryRequest, IconData } from '../../models/kakeibo.model';
 
 @Component({
   selector: 'app-category-register',
@@ -16,13 +16,12 @@ import { CreateCategoryRequest, AvailableIcon, TransactionType } from '../../mod
 })
 export class CategoryRegisterComponent implements OnInit {
   public categoryForm!: FormGroup;
-  public availableIcons: AvailableIcon[] = [];
-  public filteredIcons: AvailableIcon[] = [];
+  public availableIcons: IconData[] = [];
+  public filteredIcons: IconData[] = [];
   public isLoading = false;
   public isLoadingIcons = true;
   public errorMessage: string | null = null;
   public successMessage: string | null = null;
-  public TransactionType = TransactionType;
   public selectedIcon: string | null = null;
 
   constructor(
@@ -42,7 +41,7 @@ export class CategoryRegisterComponent implements OnInit {
     // フォームを初期化
     this.categoryForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]],
-      type: [TransactionType.EXPENSE, [Validators.required]],
+      inoutFlg: [false, [Validators.required]], // false=支出、true=収入
       icon: ['', [Validators.required]]
     });
 
@@ -55,8 +54,8 @@ export class CategoryRegisterComponent implements OnInit {
     return this.categoryForm.get('name');
   }
 
-  public get type() {
-    return this.categoryForm.get('type');
+  public get inoutFlg() {
+    return this.categoryForm.get('inoutFlg');
   }
 
   public get icon() {
@@ -70,8 +69,8 @@ export class CategoryRegisterComponent implements OnInit {
     this.categoryService.getAvailableIcons().subscribe({
       next: (response) => {
         this.isLoadingIcons = false;
-        if (response.status && response.data) {
-          this.availableIcons = response.data;
+        if (response.status && response.result) {
+          this.availableIcons = response.result.iconDatas;
           this.filteredIcons = this.availableIcons;
         }
       },
@@ -108,11 +107,11 @@ export class CategoryRegisterComponent implements OnInit {
       return;
     }
 
-    const request: CreateCategoryRequest = {
-      name: this.categoryForm.value.name,
-      icon: this.categoryForm.value.icon,
-      type: this.categoryForm.value.type,
-      userId: user.id
+    const request: RegistCategoryRequest = {
+      userId: user.userId,
+      categoryName: this.categoryForm.value.name,
+      inoutFlg: this.categoryForm.value.inoutFlg,
+      iconName: this.categoryForm.value.icon
     };
 
     this.categoryService.createCategory(request).subscribe({
