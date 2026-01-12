@@ -1,0 +1,86 @@
+<div class="category-detail-container">
+  <!-- ヘッダー -->
+  <div class="header">
+    <button class="back-button" (click)="goBack()">
+      <span class="material-icons">arrow_back</span>
+    </button>
+    <h1 class="title">{{ allData()?.categoryName || 'レポート' }}</h1>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ローディング -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>読み込み中...</p>
+    </div>
+  }
+
+  <!-- エラー -->
+  @else if (errorMessage()) {
+    <div class="error-container">
+      <span class="material-icons error-icon">error_outline</span>
+      <p>{{ errorMessage() }}</p>
+      <button class="retry-button" (click)="goBack()">戻る</button>
+    </div>
+  }
+
+  <!-- メインコンテンツ -->
+  @else if (allData()) {
+    <!-- 合計金額カード -->
+    <div class="summary-card">
+      <div class="summary-label">{{ selectedMonthLabel() }} の合計</div>
+      <div class="summary-amount">¥{{ formatAmount(selectedMonthTotal()) }}</div>
+    </div>
+
+    <!-- グラフエリア -->
+    <div class="chart-container">
+      <h2 class="section-title">月別推移</h2>
+      <div class="chart-wrapper">
+        <ngx-charts-bar-vertical
+          [results]="displayedChartData()"
+          [view]="view"
+          [gradient]="false"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="false"
+          [showXAxisLabel]="false"
+          [showYAxisLabel]="false"
+          [animations]="true"
+          [barPadding]="8"
+          [roundEdges]="true"
+          (select)="onSelect($event)">
+        </ngx-charts-bar-vertical>
+      </div>
+      <p class="chart-hint">グラフをタップして月を選択できます</p>
+    </div>
+
+    <!-- 明細リスト -->
+    <div class="transactions-container">
+      <h2 class="section-title">{{ selectedMonthLabel() }} の明細</h2>
+
+      @if (filteredTransactions().length === 0) {
+        <div class="empty-state">
+          <span class="material-icons empty-icon">receipt_long</span>
+          <p>この月の取引はありません</p>
+        </div>
+      } @else {
+        <div class="transaction-list">
+          @for (transaction of filteredTransactions(); track transaction.id) {
+            <div class="transaction-item">
+              <div class="transaction-main">
+                <div class="transaction-info">
+                  <div class="transaction-name">{{ transaction.itemName }}</div>
+                  <div class="transaction-date">{{ formatDate(transaction.usedDate) }}</div>
+                </div>
+                <div class="transaction-amount" [class.income]="transaction.inoutFlg">
+                  {{ transaction.inoutFlg ? '+' : '-' }}¥{{ formatAmount(transaction.itemAmount) }}
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

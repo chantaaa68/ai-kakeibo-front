@@ -1,0 +1,262 @@
+/* コンテナ */
+.category-detail-container {
+  min-height: 100vh;
+  background-color: #f2f2f7;
+  padding-bottom: 20px;
+}
+
+/* ヘッダー */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e5ea;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #007aff;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.back-button:hover {
+  opacity: 0.7;
+}
+
+.back-button .material-icons {
+  font-size: 24px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+}
+
+.spacer {
+  width: 40px;
+}
+
+/* ローディング */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e5ea;
+  border-top: 4px solid #007aff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* エラー */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 48px;
+  color: #ff3b30;
+  margin-bottom: 16px;
+}
+
+.retry-button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #007aff;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.retry-button:hover {
+  opacity: 0.8;
+}
+
+/* 合計金額カード */
+.summary-card {
+  margin: 16px;
+  padding: 24px;
+  background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+  text-align: center;
+}
+
+.summary-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8px;
+}
+
+.summary-amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* セクションタイトル */
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 16px 0;
+}
+
+/* グラフエリア */
+.chart-container {
+  margin: 24px 16px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.chart-wrapper {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+.chart-hint {
+  text-align: center;
+  font-size: 13px;
+  color: #8e8e93;
+  margin: 12px 0 0 0;
+}
+
+/* 明細リスト */
+.transactions-container {
+  margin: 24px 16px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.transaction-list {
+  margin-top: 16px;
+}
+
+.transaction-item {
+  padding: 16px 0;
+  border-bottom: 1px solid #e5e5ea;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transaction-info {
+  flex: 1;
+}
+
+.transaction-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 4px;
+}
+
+.transaction-date {
+  font-size: 13px;
+  color: #8e8e93;
+}
+
+.transaction-amount {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ff3b30;
+  white-space: nowrap;
+  margin-left: 16px;
+}
+
+.transaction-amount.income {
+  color: #34c759;
+}
+
+/* 空の状態 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 48px;
+  color: #c7c7cc;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 15px;
+  color: #8e8e93;
+  margin: 0;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .summary-amount {
+    font-size: 28px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .chart-container,
+  .transactions-container {
+    margin: 16px 12px;
+    padding: 16px;
+  }
+
+  .transaction-name {
+    font-size: 15px;
+  }
+
+  .transaction-amount {
+    font-size: 16px;
+  }
+}

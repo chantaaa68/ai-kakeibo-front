@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { ApiResponse } from '../models/api-response.model';
 import { User, LoginRequest, LoginResponse, RegisterRequest } from '../models/user.model';
@@ -19,58 +19,26 @@ export class AuthService {
 
   // ログイン
   public login(request: LoginRequest): Observable<ApiResponse<LoginResponse>> {
-    // モックデータ
-    const mockUser: User = {
-      id: '1',
-      name: 'テストユーザー',
-      email: request.email
-    };
-
-    const mockResponse: LoginResponse = {
-      user: mockUser,
-      token: 'mock-jwt-token-12345'
-    };
-
-    return this.apiService.post<LoginResponse>('/auth/login', request).pipe(
-      map(response => {
-        // 開発中はモックデータを使用
-        response.data = mockResponse;
-
-        if (response.status) {
+    return this.apiService.post<LoginResponse>('/User/Login', request).pipe(
+      tap(response => {
+        if (response.status && response.data) {
           this.currentUser = response.data.user;
           this.token = response.data.token;
           this.saveAuthData();
         }
-        return response;
       })
     );
   }
 
   // 新規登録
   public register(request: RegisterRequest): Observable<ApiResponse<LoginResponse>> {
-    // モックデータ
-    const mockUser: User = {
-      id: '1',
-      name: request.name,
-      email: request.email
-    };
-
-    const mockResponse: LoginResponse = {
-      user: mockUser,
-      token: 'mock-jwt-token-12345'
-    };
-
-    return this.apiService.post<LoginResponse>('/auth/register', request).pipe(
-      map(response => {
-        // 開発中はモックデータを使用
-        response.data = mockResponse;
-
-        if (response.status) {
+    return this.apiService.post<LoginResponse>('/User/Regist', request).pipe(
+      tap(response => {
+        if (response.status && response.data) {
           this.currentUser = response.data.user;
           this.token = response.data.token;
           this.saveAuthData();
         }
-        return response;
       })
     );
   }
