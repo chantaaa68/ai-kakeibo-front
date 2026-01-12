@@ -20,7 +20,7 @@ export class HeaderComponent {
 
   // ユーザー名を取得
   public getUserName(): string {
-    return this.authService.getCurrentUser()?.name || 'ゲスト';
+    return this.authService.getCurrentUser()?.userName || 'ゲスト';
   }
 
   // ユーザーメニューの開閉

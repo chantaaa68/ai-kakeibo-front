@@ -55,11 +55,23 @@ export class CalendarComponent {
     if (!date) return undefined;
 
     return this.dailySummaries.find(summary => {
-      const summaryDate = new Date(summary.date);
-      return summaryDate.getFullYear() === date.getFullYear() &&
-             summaryDate.getMonth() === date.getMonth() &&
-             summaryDate.getDate() === date.getDate();
+      // dayNoは日付の日部分
+      return summary.dayNo === date.getDate();
     });
+  }
+
+  // サマリーから収入合計を計算
+  public getIncome(summary: DailySummary): number {
+    return summary.items
+      .filter(item => item.inoutFlg === true)
+      .reduce((sum, item) => sum + item.itemAmount, 0);
+  }
+
+  // サマリーから支出合計を計算
+  public getExpense(summary: DailySummary): number {
+    return summary.items
+      .filter(item => item.inoutFlg === false)
+      .reduce((sum, item) => sum + item.itemAmount, 0);
   }
 
   // 日付クリック時

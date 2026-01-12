@@ -14,21 +14,21 @@
 
   <div *ngIf="transactions.length > 0" class="transactions-scroll">
     <div *ngFor="let transaction of transactions" class="transaction-item card">
-      <mat-icon class="transaction-icon">{{ transaction.category.icon }}</mat-icon>
+      <mat-icon class="transaction-icon">{{ transaction.iconName }}</mat-icon>
       <div class="transaction-info">
-        <div class="transaction-name">{{ transaction.name }}</div>
+        <div class="transaction-name">{{ transaction.itemName }}</div>
         <div class="transaction-category text-muted">
-          {{ transaction.category.name }}
+          {{ transaction.inoutFlg ? '収入' : '支出' }}
         </div>
       </div>
       <div class="transaction-amount"
            [ngClass]="{
-             'text-income': transaction.type === TransactionType.INCOME,
-             'text-expense': transaction.type === TransactionType.EXPENSE
+             'text-income': transaction.inoutFlg === true,
+             'text-expense': transaction.inoutFlg === false
            }">
-        <span *ngIf="transaction.type === TransactionType.INCOME">+</span>
-        <span *ngIf="transaction.type === TransactionType.EXPENSE">-</span>
-        {{ formatAmount(transaction.amount) }}円
+        <span *ngIf="transaction.inoutFlg === true">+</span>
+        <span *ngIf="transaction.inoutFlg === false">-</span>
+        {{ formatAmount(transaction.itemAmount) }}円
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@ import { CategoryService } from '../../services/category.service';
 import { CategoryItemComponent } from '../../shared/components/category-item/category-item.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { CategoryItem } from '../../models/kakeibo.model';
+import { TransactionType } from '../../models/enums';
 
 @Component({
   selector: 'app-categories',
@@ -17,7 +18,8 @@ import { CategoryItem } from '../../models/kakeibo.model';
 export class CategoriesComponent implements OnInit {
   public categories: CategoryItem[] = [];
   public displayedCategories: CategoryItem[] = [];
-  public selectedInoutFlg: boolean = false; // false=支出、true=収入
+  public selectedType: TransactionType = TransactionType.EXPENSE; // デフォルトは支出
+  public readonly TransactionType = TransactionType; // テンプレートから参照するため
   public isLoading = true;
 
   constructor(
@@ -63,14 +65,15 @@ export class CategoriesComponent implements OnInit {
 
   // 表示するカテゴリをフィルタリング
   private filterCategories(): void {
+    const inoutFlg = this.selectedType === TransactionType.INCOME;
     this.displayedCategories = this.categories.filter(
-      category => category.inoutFlg === this.selectedInoutFlg
+      category => category.inoutFlg === inoutFlg
     );
   }
 
   // タイプを変更
-  public changeType(inoutFlg: boolean): void {
-    this.selectedInoutFlg = inoutFlg;
+  public changeType(type: TransactionType): void {
+    this.selectedType = type;
     this.filterCategories();
   }
 

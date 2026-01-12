@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { Transaction, TransactionType } from '../../../../models/kakeibo.model';
+import { Transaction } from '../../../../models/kakeibo.model';
+import { TransactionType } from '../../../../models/enums';
 
 @Component({
   selector: 'app-transaction-list',
