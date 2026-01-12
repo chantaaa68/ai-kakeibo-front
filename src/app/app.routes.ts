@@ -6,6 +6,8 @@ import { KakeiboComponent } from './pages/kakeibo/kakeibo.component';
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { CategoryRegisterComponent } from './pages/category-register/category-register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { MonthlyReportComponent } from './pages/monthly-report/monthly-report.component';
+import { CategoryDetailComponent } from './pages/reports/category-detail/category-detail.component';
 
 export const routes: Routes = [
   // ホーム画面（トップページ）
@@ -44,10 +46,24 @@ export const routes: Routes = [
     // TODO: 認証ガードを追加
     // canActivate: [AuthGuard]
   },
+  // 月間レポート画面（認証が必要）
+  {
+    path: 'monthly-report',
+    component: MonthlyReportComponent
+    // TODO: 認証ガードを追加
+    // canActivate: [AuthGuard]
+  },
   // ユーザー情報画面（認証が必要）
   {
     path: 'profile',
     component: ProfileComponent
+    // TODO: 認証ガードを追加
+    // canActivate: [AuthGuard]
+  },
+  // カテゴリ別レポート詳細画面（認証が必要）
+  {
+    path: 'reports/category/:id',
+    component: CategoryDetailComponent
     // TODO: 認証ガードを追加
     // canActivate: [AuthGuard]
   },

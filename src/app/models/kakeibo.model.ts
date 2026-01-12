@@ -68,3 +68,28 @@ export interface AvailableIcon {
   displayName: string;    // 表示名（例：買い物）
   category: string;       // カテゴリ（例：shopping, food, transportなど）
 }
+
+// ===== 月間レポート関連 =====
+
+// カテゴリ別レポートアイテム
+export interface CategoryReportItem {
+  categoryName: string;   // カテゴリ名
+  totalAmount: number;    // カテゴリごとの合計金額
+}
+
+// 月間レポートアイテム
+export interface MonthlyReportItem {
+  usedMonth: string;                         // 集計月(yyyy-mm)
+  categoryReportItems: CategoryReportItem[]; // 集計月別データ
+}
+
+// 月間レポート取得リクエスト
+export interface GetMonthlyResultRequest {
+  userId: number;         // ユーザーID
+}
+
+// 月間レポート取得レスポンス
+export interface GetMonthlyResultResponse {
+  monthlyExpenses: MonthlyReportItem[]; // 各カテゴリごとの支出合計データ
+  monthlyIncomes: MonthlyReportItem[];  // 各カテゴリごとの収入合計データ
+}

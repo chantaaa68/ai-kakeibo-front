@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { ApiResponse } from '../models/api-response.model';
 import {
   Category,
   CreateCategoryRequest,
-  AvailableIcon,
-  TransactionType
+  AvailableIcon
 } from '../models/kakeibo.model';
 
 @Injectable({

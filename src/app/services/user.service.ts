@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 import { ApiResponse } from '../models/api-response.model';
@@ -28,7 +28,7 @@ export class UserService {
     const currentUser = this.authService.getCurrentUser();
 
     return this.apiService.post<User>('/User/Update', request).pipe(
-      map(response => {
+      tap(response => {
         // 認証サービスのユーザー情報も更新
         if (response.status && response.data && currentUser) {
           const newUserData: User = {
@@ -39,8 +39,6 @@ export class UserService {
           // ローカルストレージを直接更新
           localStorage.setItem('currentUser', JSON.stringify(newUserData));
         }
-
-        return response;
       })
     );
   }

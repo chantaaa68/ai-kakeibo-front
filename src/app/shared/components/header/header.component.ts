@@ -45,6 +45,12 @@ export class HeaderComponent {
     this.router.navigate(['/categories']);
   }
 
+  // 月間レポート画面に遷移
+  public navigateToMonthlyReport(): void {
+    this.closeUserMenu();
+    this.router.navigate(['/monthly-report']);
+  }
+
   // ユーザー更新画面に遷移
   public navigateToProfile(): void {
     this.closeUserMenu();

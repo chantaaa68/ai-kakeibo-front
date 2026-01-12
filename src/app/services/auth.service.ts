@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { ApiResponse } from '../models/api-response.model';
 import { User, LoginRequest, LoginResponse, RegisterRequest } from '../models/user.model';
@@ -20,13 +20,12 @@ export class AuthService {
   // ログイン
   public login(request: LoginRequest): Observable<ApiResponse<LoginResponse>> {
     return this.apiService.post<LoginResponse>('/User/Login', request).pipe(
-      map(response => {
+      tap(response => {
         if (response.status && response.data) {
           this.currentUser = response.data.user;
           this.token = response.data.token;
           this.saveAuthData();
         }
-        return response;
       })
     );
   }
@@ -34,13 +33,12 @@ export class AuthService {
   // 新規登録
   public register(request: RegisterRequest): Observable<ApiResponse<LoginResponse>> {
     return this.apiService.post<LoginResponse>('/User/Regist', request).pipe(
-      map(response => {
+      tap(response => {
         if (response.status && response.data) {
           this.currentUser = response.data.user;
           this.token = response.data.token;
           this.saveAuthData();
         }
-        return response;
       })
     );
   }
