@@ -24,11 +24,8 @@ export class AuthService {
     this.loadAuthData();
   }
 
-  // ログイン（パスワードをハッシュ化してバックエンドに送信）
-  public login(email: string, password: string): Observable<ApiResponse<LoginResponse>> {
-    const userHash = this.hashPassword(password);
-    const request: LoginRequest = { email, userHash };
-
+  // ログイン
+  public login(request: LoginRequest): Observable<ApiResponse<LoginResponse>> {
     return this.apiService.post<LoginResponse>('/User/Login', request).pipe(
       tap(response => {
         if (response.status && response.result) {
@@ -40,28 +37,17 @@ export class AuthService {
     );
   }
 
-  // 新規登録（パスワードをハッシュ化してバックエンドに送信）
-  public register(
-    userName: string,
-    email: string,
-    password: string,
-    kakeiboName: string,
-    kakeiboExplanation: string
-  ): Observable<ApiResponse<RegisterResponse>> {
-    const userHash = this.hashPassword(password);
-    const request: RegisterRequest = {
-      userName,
-      userHash,
-      email,
-      kakeiboName,
-      kakeiboExplanation
-    };
-
+  // 新規登録
+  public register(request: RegisterRequest): Observable<ApiResponse<RegisterResponse>> {
     return this.apiService.post<RegisterResponse>('/User/Regist', request).pipe(
       tap(response => {
         if (response.status && response.result) {
           // 登録後、自動的にログイン処理を行う
-          this.login(email, password).subscribe();
+          const loginRequest: LoginRequest = {
+            email: request.email,
+            userHash: request.userHash
+          };
+          this.login(loginRequest).subscribe();
         }
       })
     );
@@ -130,12 +116,5 @@ export class AuthService {
   private clearAuthData(): void {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
-  }
-
-  // パスワードをSHA-256でハッシュ化
-  private hashPassword(password: string): string {
-    // 簡易的なハッシュ化（実装は後で crypto-js などを使って実装）
-    // TODO: crypto-js を使用した SHA-256 ハッシュ化を実装
-    return btoa(password); // 暫定的に Base64 エンコードを使用
   }
 }

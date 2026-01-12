@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { LoginRequest } from '../../models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -52,26 +53,40 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = null;
 
-    const email = this.loginForm.value.email;
-    const password = this.loginForm.value.password;
+    // パスワードをSHA-256でハッシュ化してからリクエスト
+    this.hashPassword(this.loginForm.value.password).then(hashedPassword => {
+      const request: LoginRequest = {
+        email: this.loginForm.value.email,
+        userHash: hashedPassword
+      };
 
-    this.authService.login(email, password).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        if (response.status) {
-          // ログイン成功、家計簿画面に遷移
-          this.router.navigate(['/kakeibo']);
-        } else {
-          // ログイン失敗
-          this.errorMessage = response.message || 'ログインに失敗しました';
+      this.authService.login(request).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.status) {
+            // ログイン成功、家計簿画面に遷移
+            this.router.navigate(['/kakeibo']);
+          } else {
+            // ログイン失敗
+            this.errorMessage = response.message || 'ログインに失敗しました';
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.errorMessage = 'ログインに失敗しました。もう一度お試しください。';
+          console.error('Login error:', error);
         }
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = 'ログインに失敗しました。もう一度お試しください。';
-        console.error('Login error:', error);
-      }
+      });
     });
+  }
+
+  // パスワードをSHA-256でハッシュ化
+  private async hashPassword(password: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
   // 新規登録画面に遷移
