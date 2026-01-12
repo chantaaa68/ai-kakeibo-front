@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 
 // バックエンド接続設定
@@ -12,40 +13,42 @@ export interface ApiConfig {
   providedIn: 'root'
 })
 export class ApiService {
-  // バックエンドのベースURL（環境変数から取得可能にする）
+  // バックエンドのベースURL
   private config: ApiConfig = {
-    baseUrl: 'http://localhost:3000/api',
+    baseUrl: 'http://localhost:5000/api',
     timeout: 30000
   };
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   // GET リクエスト
-  public get<T>(endpoint: string, params?: any): Observable<ApiResponse<T>> {
-    // TODO: 実際のHTTPリクエストに置き換える
-    console.log(`[API GET] ${this.config.baseUrl}${endpoint}`, params);
-    return this.mockResponse<T>();
+  public get<T>(endpoint: string, params?: Record<string, string | number | boolean>): Observable<ApiResponse<T>> {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.keys(params).forEach(key => {
+        if (params[key] !== undefined && params[key] !== null) {
+          httpParams = httpParams.set(key, String(params[key]));
+        }
+      });
+    }
+
+    return this.http.get<ApiResponse<T>>(`${this.config.baseUrl}${endpoint}`, { params: httpParams });
   }
 
   // POST リクエスト
-  public post<T>(endpoint: string, body: any): Observable<ApiResponse<T>> {
-    // TODO: 実際のHTTPリクエストに置き換える
-    console.log(`[API POST] ${this.config.baseUrl}${endpoint}`, body);
-    return this.mockResponse<T>();
+  public post<T>(endpoint: string, body: unknown): Observable<ApiResponse<T>> {
+    return this.http.post<ApiResponse<T>>(`${this.config.baseUrl}${endpoint}`, body);
   }
 
   // PUT リクエスト
-  public put<T>(endpoint: string, body: any): Observable<ApiResponse<T>> {
-    // TODO: 実際のHTTPリクエストに置き換える
-    console.log(`[API PUT] ${this.config.baseUrl}${endpoint}`, body);
-    return this.mockResponse<T>();
+  public put<T>(endpoint: string, body: unknown): Observable<ApiResponse<T>> {
+    return this.http.put<ApiResponse<T>>(`${this.config.baseUrl}${endpoint}`, body);
   }
 
   // DELETE リクエスト
   public delete<T>(endpoint: string): Observable<ApiResponse<T>> {
-    // TODO: 実際のHTTPリクエストに置き換える
-    console.log(`[API DELETE] ${this.config.baseUrl}${endpoint}`);
-    return this.mockResponse<T>();
+    return this.http.delete<ApiResponse<T>>(`${this.config.baseUrl}${endpoint}`);
   }
 
   // 設定を更新
@@ -53,15 +56,8 @@ export class ApiService {
     this.config = { ...this.config, ...config };
   }
 
-  // モックレスポンスを返す（開発用）
-  private mockResponse<T>(data?: T, success: boolean = true): Observable<ApiResponse<T>> {
-    const response: ApiResponse<T> = {
-      status: success,
-      message: success ? null : 'エラーが発生しました',
-      data: data as T
-    };
-
-    // ネットワーク遅延をシミュレート
-    return of(response).pipe(delay(500));
+  // ベースURLを取得
+  public getBaseUrl(): string {
+    return this.config.baseUrl;
   }
 }

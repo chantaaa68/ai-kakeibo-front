@@ -20,4 +20,4 @@ artifacts:
   files:
     # dist/プロジェクト名/** の内容を成果物としてアップロード
     - "**/*"
-  base-directory: dist/angular-app/browser
+  base-directory: dist/ai-kakeibo-front/browser
