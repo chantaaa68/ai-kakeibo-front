@@ -1,26 +1,68 @@
-// ユーザー情報
+// ユーザー情報（画面表示用）
 export interface User {
-  id: string;
-  name: string;
+  userId: number;
+  userName: string;
   email: string;
+  kakeiboId: number;
+  kakeiboName: string;
+  kakeiboExplanation: string;
 }
 
-// ログインリクエスト
+// ログインリクエスト（バックエンドDTO）
 export interface LoginRequest {
   email: string;
   userHash: string;
 }
 
-// ログインレスポンス
+// ログインレスポンス（バックエンドDTO）
 export interface LoginResponse {
-  user: User;
+  userId: number;
   token: string;
+  kakeiboId: number;
 }
 
-// ユーザー登録リクエスト
+// ユーザー登録リクエスト（バックエンドDTO）
 export interface RegisterRequest {
-  name: string;
+  userName: string;
+  userHash: string;
   email: string;
-  password: string;
-  kakeiboDescription?: string; // 家計簿の説明（任意）
+  kakeiboName: string;
+  kakeiboExplanation: string;
+}
+
+// ユーザー登録レスポンス（バックエンドDTO）
+export interface RegisterResponse {
+  userId: number;
+}
+
+// ユーザー情報取得リクエスト（バックエンドDTO）
+export interface GetUserDataRequest {
+  userId: number;
+}
+
+// ユーザー情報取得レスポンス（バックエンドDTO）
+export interface GetUserDataResponse {
+  userName: string;
+  email: string;
+  kakeiboName: string;
+  kakeiboExplanation: string;
+}
+
+// ユーザー更新リクエスト（バックエンドDTO）
+export interface UpdateUserRequest {
+  userId: number;
+  userName?: string | null;
+  email?: string | null;
+  kakeiboName?: string | null;
+  kakeiboExplanation?: string | null;
+}
+
+// ユーザー削除リクエスト（バックエンドDTO）
+export interface DeleteUserRequest {
+  userId: number;
+}
+
+// ユーザー削除レスポンス（バックエンドDTO）
+export interface DeleteUserResponse {
+  userId: number;
 }

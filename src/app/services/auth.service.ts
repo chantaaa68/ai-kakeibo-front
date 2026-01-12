@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { ApiResponse } from '../models/api-response.model';
-import { User, LoginRequest, LoginResponse, RegisterRequest } from '../models/user.model';
+import {
+  User,
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+  GetUserDataRequest
+} from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,23 +28,26 @@ export class AuthService {
   public login(request: LoginRequest): Observable<ApiResponse<LoginResponse>> {
     return this.apiService.post<LoginResponse>('/User/Login', request).pipe(
       tap(response => {
-        if (response.status && response.data) {
-          this.currentUser = response.data.user;
-          this.token = response.data.token;
-          this.saveAuthData();
+        if (response.status && response.result) {
+          // ユーザー情報を取得してから保存
+          this.token = response.result.token;
+          this.fetchAndSaveUserData(response.result.userId, response.result.kakeiboId);
         }
       })
     );
   }
 
   // 新規登録
-  public register(request: RegisterRequest): Observable<ApiResponse<LoginResponse>> {
-    return this.apiService.post<LoginResponse>('/User/Regist', request).pipe(
+  public register(request: RegisterRequest): Observable<ApiResponse<RegisterResponse>> {
+    return this.apiService.post<RegisterResponse>('/User/Regist', request).pipe(
       tap(response => {
-        if (response.status && response.data) {
-          this.currentUser = response.data.user;
-          this.token = response.data.token;
-          this.saveAuthData();
+        if (response.status && response.result) {
+          // 登録後、自動的にログイン処理を行う
+          const loginRequest: LoginRequest = {
+            email: request.email,
+            userHash: request.userHash
+          };
+          this.login(loginRequest).subscribe();
         }
       })
     );
@@ -63,6 +73,24 @@ export class AuthService {
   // ログイン状態を確認
   public isAuthenticated(): boolean {
     return this.currentUser !== null && this.token !== null;
+  }
+
+  // ユーザー情報を取得して保存
+  private fetchAndSaveUserData(userId: number, kakeiboId: number): void {
+    const request: GetUserDataRequest = { userId };
+    this.apiService.post<any>('/User/GetUserData', request).subscribe(response => {
+      if (response.status && response.result) {
+        this.currentUser = {
+          userId,
+          userName: response.result.userName,
+          email: response.result.email,
+          kakeiboId,
+          kakeiboName: response.result.kakeiboName,
+          kakeiboExplanation: response.result.kakeiboExplanation
+        };
+        this.saveAuthData();
+      }
+    });
   }
 
   // 認証情報をローカルストレージに保存

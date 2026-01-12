@@ -4,15 +4,12 @@ import { tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 import { ApiResponse } from '../models/api-response.model';
-import { User } from '../models/user.model';
-
-// ユーザー更新リクエスト
-export interface UpdateUserRequest {
-  name?: string;
-  email?: string;
-  currentPassword?: string;
-  newPassword?: string;
-}
+import {
+  User,
+  UpdateUserRequest,
+  GetUserDataRequest,
+  GetUserDataResponse
+} from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,27 +21,31 @@ export class UserService {
   ) {}
 
   // ユーザー情報を更新
-  public updateUser(userId: string, request: UpdateUserRequest): Observable<ApiResponse<User>> {
-    const currentUser = this.authService.getCurrentUser();
-
-    return this.apiService.post<User>('/User/Update', request).pipe(
+  public updateUser(request: UpdateUserRequest): Observable<ApiResponse<any>> {
+    return this.apiService.post<any>('/User/Update', request).pipe(
       tap(response => {
         // 認証サービスのユーザー情報も更新
-        if (response.status && response.data && currentUser) {
-          const newUserData: User = {
-            ...currentUser,
-            name: response.data.name,
-            email: response.data.email
-          };
-          // ローカルストレージを直接更新
-          localStorage.setItem('currentUser', JSON.stringify(newUserData));
+        if (response.status && response.result) {
+          const currentUser = this.authService.getCurrentUser();
+          if (currentUser) {
+            const newUserData: User = {
+              ...currentUser,
+              userName: request.userName || currentUser.userName,
+              email: request.email || currentUser.email,
+              kakeiboName: request.kakeiboName || currentUser.kakeiboName,
+              kakeiboExplanation: request.kakeiboExplanation || currentUser.kakeiboExplanation
+            };
+            // ローカルストレージを直接更新
+            localStorage.setItem('currentUser', JSON.stringify(newUserData));
+          }
         }
       })
     );
   }
 
   // ユーザー情報を取得
-  public getUser(userId: string): Observable<ApiResponse<User>> {
-    return this.apiService.post<User>('/User/GetUserData', { userId });
+  public getUser(userId: number): Observable<ApiResponse<GetUserDataResponse>> {
+    const request: GetUserDataRequest = { userId };
+    return this.apiService.post<GetUserDataResponse>('/User/GetUserData', request);
   }
 }

@@ -4,6 +4,6 @@ export interface ApiResponse<T> {
   status: boolean;
   // エラーメッセージ（成功時はnull）
   message: string | null;
-  // レスポンスデータ
-  data: T;
+  // レスポンスデータ（バックエンドの Result プロパティに対応）
+  result: T;
 }
