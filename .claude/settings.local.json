@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(dir \"C:\\\\Users\\\\takah\\\\Documents\\\\04.AI-Kakeibo\\\\ai-kakeibo-front\")",
+      "Bash(dir \"C:\\\\Users\\\\takah\\\\Documents\\\\04.AI-Kakeibo\\\\ai-kakeibo-front\\\\src\")",
+      "Bash(npm run build:*)"
+    ]
+  }
+}

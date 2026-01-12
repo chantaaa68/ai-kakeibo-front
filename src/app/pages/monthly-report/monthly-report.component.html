@@ -1,0 +1,134 @@
+<app-header></app-header>
+
+<div class="monthly-report-container">
+  <!-- ローディング中 -->
+  <div *ngIf="isLoading" class="loading-state">
+    <p>読み込み中...</p>
+  </div>
+
+  <!-- メインコンテンツ -->
+  <div *ngIf="!isLoading && monthlyData" class="content">
+    <!-- ヘッダーセクション -->
+    <div class="report-header">
+      <h2>月間レポート</h2>
+
+      <!-- 収入/支出切り替えボタン -->
+      <div class="type-toggle">
+        <button
+          class="toggle-button"
+          [class.active]="displayType === 'expense'"
+          (click)="displayType === 'income' && toggleDisplayType()">
+          支出
+        </button>
+        <button
+          class="toggle-button"
+          [class.active]="displayType === 'income'"
+          (click)="displayType === 'expense' && toggleDisplayType()">
+          収入
+        </button>
+      </div>
+
+      <!-- 月選択 -->
+      <mat-form-field class="month-selector" appearance="outline">
+        <mat-label>表示月</mat-label>
+        <mat-select [(value)]="selectedMonth" (selectionChange)="onMonthChange()">
+          <mat-option *ngFor="let month of availableMonths" [value]="month">
+            {{ formatMonth(month) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- グラフと一覧のコンテナ -->
+    <div class="report-content" *ngIf="currentMonthData">
+      <!-- 左側：円グラフと合計 -->
+      <div class="chart-section card">
+        <div class="chart-header">
+          <h3>{{ formatMonth(selectedMonth) }}の{{ displayType === 'expense' ? '支出' : '収入' }}</h3>
+          <p class="total-amount">
+            合計: <span class="amount">{{ formatAmount(getTotalAmount()) }}円</span>
+          </p>
+        </div>
+
+        <!-- 円グラフ -->
+        <div class="chart-container" *ngIf="chartData.length > 0">
+          <ngx-charts-pie-chart
+            [view]="[400, 300]"
+            [results]="chartData"
+            [scheme]="colorScheme"
+            [labels]="true"
+            [doughnut]="false"
+            [legend]="false"
+            [gradient]="true">
+          </ngx-charts-pie-chart>
+        </div>
+
+        <div class="empty-chart" *ngIf="chartData.length === 0">
+          <p class="text-muted">データがありません</p>
+        </div>
+      </div>
+
+      <!-- 右側：カテゴリ一覧 -->
+      <div class="category-section">
+        <div class="category-list card">
+          <h3>カテゴリ別内訳</h3>
+
+          <div class="category-items">
+            <div
+              *ngFor="let item of currentMonthData.categoryReportItems"
+              class="category-item"
+              [class.selected]="selectedCategory === item.categoryName"
+              (click)="onCategorySelect(item.categoryName)">
+
+              <mat-icon class="category-icon">{{ getCategoryIcon(item.categoryName) }}</mat-icon>
+
+              <div class="category-info">
+                <div class="category-name">{{ item.categoryName }}</div>
+                <div class="category-percentage text-muted">
+                  {{ ((item.totalAmount / getTotalAmount()) * 100).toFixed(1) }}%
+                </div>
+              </div>
+
+              <div class="category-amount"
+                   [ngClass]="{
+                     'text-income': displayType === 'income',
+                     'text-expense': displayType === 'expense'
+                   }">
+                {{ formatAmount(item.totalAmount) }}円
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-category" *ngIf="currentMonthData.categoryReportItems.length === 0">
+            <p class="text-muted">カテゴリがありません</p>
+          </div>
+        </div>
+
+        <!-- 取引詳細リスト -->
+        <div class="transaction-detail card" *ngIf="selectedCategory">
+          <div class="detail-header">
+            <h3>{{ selectedCategory }}の明細</h3>
+            <button class="close-button" (click)="selectedCategory = null; selectedTransactions = []">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <app-transaction-list
+            [transactions]="selectedTransactions"
+            [selectedDate]="null">
+          </app-transaction-list>
+        </div>
+      </div>
+    </div>
+
+    <!-- データがない場合 -->
+    <div class="empty-state" *ngIf="!currentMonthData">
+      <p class="text-muted">選択された月のデータがありません</p>
+    </div>
+  </div>
+
+  <!-- エラー時 -->
+  <div *ngIf="!isLoading && !monthlyData" class="error-state">
+    <p class="text-muted">データの読み込みに失敗しました</p>
+  </div>
+</div>
