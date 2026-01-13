@@ -1,0 +1,199 @@
+// カテゴリ編集画面のスタイル
+.category-edit-container {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-xl) 0;
+  background-color: var(--color-bg);
+}
+
+.edit-card {
+  max-width: 100%;
+}
+
+.edit-header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+
+  h2 {
+    margin-bottom: var(--spacing-sm);
+  }
+}
+
+.loading-container {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+.success-alert {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  background-color: #d4edda;
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-md);
+  color: var(--color-success);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.error-alert {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  background-color: #fee;
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+}
+
+.type-selection {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.type-option {
+  flex: 1;
+  min-width: 120px;
+  cursor: pointer;
+
+  input[type="radio"] {
+    display: none;
+  }
+
+  .type-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    gap: var(--spacing-xs);
+
+    .material-icons {
+      font-size: 32px;
+      color: var(--color-gray-500);
+    }
+  }
+
+  input[type="radio"]:checked + .type-label {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-light);
+    color: var(--color-primary-dark);
+
+    .material-icons {
+      color: var(--color-primary);
+    }
+  }
+
+  &:hover .type-label {
+    border-color: var(--color-primary-light);
+  }
+}
+
+.loading-icons {
+  text-align: center;
+  padding: var(--spacing-lg);
+  color: var(--color-text-secondary);
+}
+
+.icons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  gap: var(--spacing-sm);
+  max-height: 300px;
+  overflow-y: auto;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg);
+
+  /* スクロールバーのスタイリング */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-gray-400);
+    border-radius: var(--radius-sm);
+
+    &:hover {
+      background: var(--color-gray-500);
+    }
+  }
+}
+
+.icon-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background-color: var(--color-bg-light);
+
+  .material-icons {
+    font-size: 24px;
+    color: var(--color-text-primary);
+  }
+
+  &:hover {
+    border-color: var(--color-primary-light);
+    background-color: var(--color-gray-100);
+  }
+
+  &.selected {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-light);
+
+    .material-icons {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.form-actions {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+
+  button {
+    flex: 1;
+    min-width: 150px;
+  }
+}
+
+// レスポンシブ対応
+@media (max-width: 768px) {
+  .icons-grid {
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    max-height: 250px;
+  }
+
+  .icon-option {
+    padding: var(--spacing-xs);
+
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+
+  .form-actions {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+}

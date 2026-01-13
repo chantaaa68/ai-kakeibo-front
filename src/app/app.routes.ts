@@ -5,6 +5,8 @@ import { RegisterComponent } from './pages/register/register.component';
 import { KakeiboComponent } from './pages/kakeibo/kakeibo.component';
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { CategoryRegisterComponent } from './pages/category-register/category-register.component';
+import { CategoryEditComponent } from './pages/category-edit/category-edit.component';
+import { KakeiboItemRegisterComponent } from './pages/kakeibo-item-register/kakeibo-item-register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { MonthlyReportComponent } from './pages/monthly-report/monthly-report.component';
 import { CategoryDetailComponent } from './pages/reports/category-detail/category-detail.component';
@@ -43,6 +45,20 @@ export const routes: Routes = [
   {
     path: 'category-register',
     component: CategoryRegisterComponent
+    // TODO: 認証ガードを追加
+    // canActivate: [AuthGuard]
+  },
+  // カテゴリ編集画面（認証が必要）
+  {
+    path: 'category-edit/:id',
+    component: CategoryEditComponent
+    // TODO: 認証ガードを追加
+    // canActivate: [AuthGuard]
+  },
+  // 家計簿アイテム登録画面（認証が必要）
+  {
+    path: 'kakeibo-item-register',
+    component: KakeiboItemRegisterComponent
     // TODO: 認証ガードを追加
     // canActivate: [AuthGuard]
   },

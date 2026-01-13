@@ -81,4 +81,9 @@ export class CategoriesComponent implements OnInit {
   public navigateToRegister(): void {
     this.router.navigate(['/category-register']);
   }
+
+  // カテゴリ編集画面に遷移
+  public navigateToEdit(categoryId: number): void {
+    this.router.navigate(['/category-edit', categoryId]);
+  }
 }

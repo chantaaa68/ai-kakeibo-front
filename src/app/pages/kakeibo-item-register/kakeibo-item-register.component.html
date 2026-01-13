@@ -1,0 +1,182 @@
+<!-- 共通ヘッダー -->
+<app-header></app-header>
+
+<div class="item-register-container">
+  <div class="container container-md">
+    <div class="register-card card">
+      <!-- ヘッダー -->
+      <div class="register-header">
+        <h2>家計簿アイテム登録</h2>
+        <p class="text-muted">新しい収支アイテムを登録してください</p>
+      </div>
+
+      <!-- 成功メッセージ -->
+      <div *ngIf="successMessage" class="success-alert">
+        {{ successMessage }}
+      </div>
+
+      <!-- エラーメッセージ -->
+      <div *ngIf="errorMessage" class="error-alert">
+        {{ errorMessage }}
+      </div>
+
+      <!-- 登録フォーム -->
+      <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+        <!-- アイテム名 -->
+        <div class="form-group">
+          <label class="form-label" for="itemName">アイテム名</label>
+          <input
+            type="text"
+            id="itemName"
+            class="form-control"
+            [class.is-invalid]="itemName?.invalid && itemName?.touched"
+            formControlName="itemName"
+            placeholder="例: スーパーでの買い物"
+          />
+          <div *ngIf="itemName?.invalid && itemName?.touched" class="form-error">
+            <span *ngIf="itemName?.errors?.['required']">アイテム名を入力してください</span>
+            <span *ngIf="itemName?.errors?.['minlength']">アイテム名は1文字以上で入力してください</span>
+          </div>
+        </div>
+
+        <!-- アイテム金額 -->
+        <div class="form-group">
+          <label class="form-label" for="itemAmount">金額（円）</label>
+          <input
+            type="number"
+            id="itemAmount"
+            class="form-control"
+            [class.is-invalid]="itemAmount?.invalid && itemAmount?.touched"
+            formControlName="itemAmount"
+            placeholder="1000"
+            min="1"
+          />
+          <div *ngIf="itemAmount?.invalid && itemAmount?.touched" class="form-error">
+            <span *ngIf="itemAmount?.errors?.['required']">金額を入力してください</span>
+            <span *ngIf="itemAmount?.errors?.['min']">金額は1円以上で入力してください</span>
+          </div>
+        </div>
+
+        <!-- タイプ選択 -->
+        <div class="form-group">
+          <label class="form-label">タイプ</label>
+          <div class="type-selection">
+            <label class="type-option">
+              <input
+                type="radio"
+                formControlName="inoutFlg"
+                [value]="false"
+              />
+              <span class="type-label">
+                <mat-icon>remove_circle</mat-icon>
+                支出
+              </span>
+            </label>
+            <label class="type-option">
+              <input
+                type="radio"
+                formControlName="inoutFlg"
+                [value]="true"
+              />
+              <span class="type-label">
+                <mat-icon>add_circle</mat-icon>
+                収入
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 使用日 -->
+        <div class="form-group">
+          <label class="form-label" for="usedDate">使用日</label>
+          <input
+            type="date"
+            id="usedDate"
+            class="form-control"
+            [class.is-invalid]="usedDate?.invalid && usedDate?.touched"
+            formControlName="usedDate"
+          />
+          <div *ngIf="usedDate?.invalid && usedDate?.touched" class="form-error">
+            <span *ngIf="usedDate?.errors?.['required']">使用日を選択してください</span>
+          </div>
+        </div>
+
+        <!-- カテゴリ選択 -->
+        <div class="form-group">
+          <label class="form-label" for="categoryId">カテゴリ</label>
+          <div *ngIf="isLoadingCategories" class="loading-text">
+            <p>カテゴリを読み込み中...</p>
+          </div>
+          <select
+            *ngIf="!isLoadingCategories"
+            id="categoryId"
+            class="form-control"
+            [class.is-invalid]="categoryId?.invalid && categoryId?.touched"
+            formControlName="categoryId">
+            <option value="">カテゴリを選択してください</option>
+            <option *ngFor="let category of filteredCategories" [value]="category.id">
+              {{ category.categoryName }}
+            </option>
+          </select>
+          <div *ngIf="categoryId?.invalid && categoryId?.touched" class="form-error">
+            <span *ngIf="categoryId?.errors?.['required']">カテゴリを選択してください</span>
+          </div>
+          <p *ngIf="!isLoadingCategories && filteredCategories.length === 0" class="help-text">
+            選択したタイプに対応するカテゴリがありません。先にカテゴリを登録してください。
+          </p>
+        </div>
+
+        <!-- 頻度選択 -->
+        <div class="form-group">
+          <label class="form-label" for="frequency">頻度</label>
+          <select
+            id="frequency"
+            class="form-control"
+            [class.is-invalid]="frequency?.invalid && frequency?.touched"
+            formControlName="frequency">
+            <option *ngFor="let option of frequencyOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+          <div *ngIf="frequency?.invalid && frequency?.touched" class="form-error">
+            <span *ngIf="frequency?.errors?.['required']">頻度を選択してください</span>
+          </div>
+        </div>
+
+        <!-- 固定終了日 (頻度が0以外の場合のみ表示) -->
+        <div *ngIf="showFixedEndDate" class="form-group">
+          <label class="form-label" for="fixedEndDate">固定終了日</label>
+          <input
+            type="date"
+            id="fixedEndDate"
+            class="form-control"
+            [class.is-invalid]="fixedEndDate?.invalid && fixedEndDate?.touched"
+            formControlName="fixedEndDate"
+          />
+          <div *ngIf="fixedEndDate?.invalid && fixedEndDate?.touched" class="form-error">
+            <span *ngIf="fixedEndDate?.errors?.['required']">固定終了日を選択してください</span>
+          </div>
+          <p class="help-text">繰り返しアイテムの終了日を指定してください</p>
+        </div>
+
+        <!-- ボタン -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg"
+            [disabled]="isLoading">
+            <span *ngIf="!isLoading">登録</span>
+            <span *ngIf="isLoading">登録中...</span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline btn-lg"
+            (click)="navigateToKakeibo()"
+            [disabled]="isLoading">
+            キャンセル
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
