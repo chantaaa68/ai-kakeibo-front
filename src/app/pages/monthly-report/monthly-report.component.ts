@@ -9,11 +9,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { AuthService } from '../../services/auth.service';
 import { KakeiboService } from '../../services/kakeibo.service';
 import { HeaderComponent } from '../../shared/components/header/header.component';
-import { TransactionListComponent } from '../kakeibo/components/transaction-list/transaction-list.component';
 import {
-  GetMonthlyResultResponse,
   MonthlyReportItem,
-  KakeiboItem,
   GetMonthlyReportResponse
 } from '../../models/kakeibo.model';
 import { ApiResponse } from '../../models/api-response.model';
@@ -39,8 +36,7 @@ const CATEGORY_ICON_MAP: Record<string, string> = {
     MatSelectModule,
     MatFormFieldModule,
     NgxChartsModule,
-    HeaderComponent,
-    TransactionListComponent
+    HeaderComponent
   ],
   templateUrl: './monthly-report.component.html',
   styleUrl: './monthly-report.component.scss'
@@ -53,8 +49,6 @@ export class MonthlyReportComponent implements OnInit {
   public currentMonthData: MonthlyReportItem | null = null;
   public chartData: Array<{ name: string; value: number }> = [];
   public colorScheme = 'vivid';
-  public selectedCategory: string | null = null;
-  public selectedTransactions: KakeiboItem[] = [];
   public isLoading = true;
 
   constructor(
@@ -74,19 +68,15 @@ export class MonthlyReportComponent implements OnInit {
 
   public toggleDisplayType(): void {
     this.displayType = this.displayType === 'expense' ? 'income' : 'expense';
-    this.clearCategorySelection();
     this.initializeMonthSelection();
   }
 
   public onMonthChange(): void {
-    this.clearCategorySelection();
     this.updateChartData();
   }
 
-  public onCategorySelect(categoryName: string): void {
-    this.selectedCategory = categoryName;
-    // TODO: API実装後は実際のカテゴリ詳細データを取得する
-    this.selectedTransactions = this.generateMockTransactions(categoryName);
+  public navigateToCategoryDetail(categoryId: number): void {
+    this.router.navigate(['/reports/category', categoryId]);
   }
 
   public getCategoryIcon(categoryName: string): string {
@@ -143,10 +133,21 @@ export class MonthlyReportComponent implements OnInit {
       ? this.monthlyData.monthlyExpenses
       : this.monthlyData.monthlyIncomes;
 
-    this.availableMonths = monthlyItems.map(item => item.usedMonth);
+    // 月を新しい順（降順）にソート
+    this.availableMonths = monthlyItems
+      .map(item => item.usedMonth)
+      .sort((a, b) => b.localeCompare(a));
 
     if (this.availableMonths.length > 0) {
-      this.selectedMonth = this.availableMonths[0];
+      // 現在の年月を取得（yyyy-MM形式）
+      const now = new Date();
+      const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+      // 現在の月がavailableMonthsに含まれている場合はそれを選択、なければ最新の月を選択
+      this.selectedMonth = this.availableMonths.includes(currentMonth)
+        ? currentMonth
+        : this.availableMonths[0];
+
       this.updateChartData();
     }
   }
@@ -168,37 +169,5 @@ export class MonthlyReportComponent implements OnInit {
           value: item.totalAmount
         }))
       : [];
-  }
-
-  private clearCategorySelection(): void {
-    this.selectedCategory = null;
-    this.selectedTransactions = [];
-  }
-
-  // TODO: API実装後は削除
-  private generateMockTransactions(categoryName: string): KakeiboItem[] {
-    const inoutFlg = this.displayType === 'income'; // true=収入、false=支出
-    const iconName = this.getCategoryIcon(categoryName);
-    const numTransactions = Math.floor(Math.random() * 5) + 3;
-    const mockTransactions: KakeiboItem[] = [];
-
-    for (let i = 0; i < numTransactions; i++) {
-      const day = Math.floor(Math.random() * 28) + 1;
-      const [year, month] = this.selectedMonth.split('-');
-      const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, day);
-
-      mockTransactions.push({
-        itemId: i,
-        itemName: `${categoryName}の支払い ${i + 1}`,
-        itemAmount: Math.floor(Math.random() * 5000) + 500,
-        inoutFlg: inoutFlg,
-        usedDate: date.toISOString(),
-        iconName: iconName
-      });
-    }
-
-    return mockTransactions.sort((a, b) =>
-      new Date(a.usedDate).getTime() - new Date(b.usedDate).getTime()
-    );
   }
 }

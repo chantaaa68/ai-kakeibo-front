@@ -77,8 +77,7 @@
             <div
               *ngFor="let item of currentMonthData.categoryReportItems"
               class="category-item"
-              [class.selected]="selectedCategory === item.categoryName"
-              (click)="onCategorySelect(item.categoryName)">
+              (click)="navigateToCategoryDetail(item.categoryId)">
 
               <mat-icon class="category-icon">{{ getCategoryIcon(item.categoryName) }}</mat-icon>
 
@@ -95,6 +94,7 @@
                      'text-expense': displayType === 'expense'
                    }">
                 {{ formatAmount(item.totalAmount) }}円
+                <mat-icon class="chevron-icon">chevron_right</mat-icon>
               </div>
             </div>
           </div>
@@ -102,21 +102,6 @@
           <div class="empty-category" *ngIf="currentMonthData.categoryReportItems.length === 0">
             <p class="text-muted">カテゴリがありません</p>
           </div>
-        </div>
-
-        <!-- 取引詳細リスト -->
-        <div class="transaction-detail card" *ngIf="selectedCategory">
-          <div class="detail-header">
-            <h3>{{ selectedCategory }}の明細</h3>
-            <button class="close-button" (click)="selectedCategory = null; selectedTransactions = []">
-              <mat-icon>close</mat-icon>
-            </button>
-          </div>
-
-          <app-transaction-list
-            [transactions]="selectedTransactions"
-            [selectedDate]="null">
-          </app-transaction-list>
         </div>
       </div>
     </div>

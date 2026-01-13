@@ -162,6 +162,7 @@ export interface UpdateKakeiboResponse {
 
 // カテゴリ別レポートアイテム
 export interface CategoryReportItem {
+  categoryId: number;
   categoryName: string;
   iconName: string;
   totalAmount: number;

@@ -2,7 +2,10 @@ import { Component, OnInit, signal, computed, inject, PLATFORM_ID } from '@angul
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { ReportService } from '../../../services/report.service';
+import { HeaderComponent } from '../../../shared/components/header/header.component';
 import {
   CategoryTrendResponse,
   TrendItem,
@@ -13,7 +16,13 @@ import {
 @Component({
   selector: 'app-category-detail',
   standalone: true,
-  imports: [CommonModule, NgxChartsModule],
+  imports: [
+    CommonModule,
+    NgxChartsModule,
+    MatIconModule,
+    MatButtonModule,
+    HeaderComponent
+  ],
   templateUrl: './category-detail.component.html',
   styleUrls: ['./category-detail.component.css']
 })
@@ -175,7 +184,7 @@ export class CategoryDetailComponent implements OnInit {
    * 戻るボタン
    */
   goBack(): void {
-    this.router.navigate(['/categories']);
+    this.router.navigate(['/monthly-report']);
   }
 
   /**

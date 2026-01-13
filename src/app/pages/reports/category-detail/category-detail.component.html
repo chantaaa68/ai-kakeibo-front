@@ -1,8 +1,10 @@
+<app-header></app-header>
+
 <div class="category-detail-container">
-  <!-- ヘッダー -->
-  <div class="header">
-    <button class="back-button" (click)="goBack()">
-      <span class="material-icons">arrow_back</span>
+  <!-- ページヘッダー -->
+  <div class="page-header">
+    <button mat-icon-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
     </button>
     <h1 class="title">{{ allData()?.categoryName || 'レポート' }}</h1>
     <div class="spacer"></div>
@@ -19,9 +21,9 @@
   <!-- エラー -->
   @else if (errorMessage()) {
     <div class="error-container">
-      <span class="material-icons error-icon">error_outline</span>
+      <mat-icon class="error-icon">error_outline</mat-icon>
       <p>{{ errorMessage() }}</p>
-      <button class="retry-button" (click)="goBack()">戻る</button>
+      <button mat-raised-button class="retry-button" (click)="goBack()">戻る</button>
     </div>
   }
 
@@ -61,7 +63,7 @@
 
       @if (filteredTransactions().length === 0) {
         <div class="empty-state">
-          <span class="material-icons empty-icon">receipt_long</span>
+          <mat-icon class="empty-icon">receipt_long</mat-icon>
           <p>この月の取引はありません</p>
         </div>
       } @else {
