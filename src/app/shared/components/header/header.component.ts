@@ -39,6 +39,12 @@ export class HeaderComponent {
     this.router.navigate(['/kakeibo']);
   }
 
+  // アイテム新規登録画面に遷移
+  public navigateToKakeiboItem(): void {
+    this.closeUserMenu();
+    this.router.navigate(['/kakeibo-item-register']);
+  }
+
   // カテゴリ一覧画面に遷移
   public navigateToCategories(): void {
     this.closeUserMenu();

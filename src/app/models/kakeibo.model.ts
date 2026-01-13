@@ -184,6 +184,17 @@ export interface GetMonthlyResultResponse {
   monthlyIncomes: MonthlyReportItem[];
 }
 
+// 月間レポート取得リクエスト
+export interface GetMonthlyReportRequest {
+  userId: number;
+}
+
+// 月間レポート取得レスポンス
+export interface GetMonthlyReportResponse {
+  monthlyExpenses: MonthlyReportItem[];
+  monthlyIncomes: MonthlyReportItem[];
+}
+
 // ===== 型エイリアス（後方互換性のため） =====
 
 // 取引情報のエイリアス

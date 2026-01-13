@@ -16,7 +16,9 @@ import {
   DeleteKakeiboItemRequest,
   DeleteKakeiboItemResponse,
   UpdateKakeiboRequest,
-  UpdateKakeiboResponse
+  UpdateKakeiboResponse,
+  GetMonthlyReportRequest,
+  GetMonthlyReportResponse
 } from '../models/kakeibo.model';
 
 @Injectable({
@@ -28,6 +30,11 @@ export class KakeiboService {
   // 月間レポートを取得
   public getMonthlyResult(request: GetMonthlyResultRequest): Observable<ApiResponse<GetMonthlyResultResponse>> {
     return this.apiService.post<GetMonthlyResultResponse>('/kakeibo/GetMonthlyResult', request);
+  }
+
+  // 月間レポートを取得
+  public getMonthlyReport(request: GetMonthlyReportRequest): Observable<ApiResponse<GetMonthlyReportResponse>> {
+    return this.apiService.post<GetMonthlyReportResponse>('/kakeibo/GetMonthlyReport', request);
   }
 
   // 家計簿項目一覧を取得

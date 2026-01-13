@@ -13,8 +13,10 @@ import { TransactionListComponent } from '../kakeibo/components/transaction-list
 import {
   GetMonthlyResultResponse,
   MonthlyReportItem,
-  KakeiboItem
+  KakeiboItem,
+  GetMonthlyReportResponse
 } from '../../models/kakeibo.model';
+import { ApiResponse } from '../../models/api-response.model';
 
 // カテゴリアイコンマッピング定数
 const CATEGORY_ICON_MAP: Record<string, string> = {
@@ -45,7 +47,7 @@ const CATEGORY_ICON_MAP: Record<string, string> = {
 })
 export class MonthlyReportComponent implements OnInit {
   public displayType: 'expense' | 'income' = 'expense';
-  public monthlyData: GetMonthlyResultResponse | null = null;
+  public monthlyData: GetMonthlyReportResponse | null = null;
   public availableMonths: string[] = [];
   public selectedMonth = '';
   public currentMonthData: MonthlyReportItem | null = null;
@@ -117,10 +119,10 @@ export class MonthlyReportComponent implements OnInit {
       return;
     }
 
-    this.kakeiboService.getMonthlyResult({
+    this.kakeiboService.getMonthlyReport({
       userId: user.userId
     }).subscribe({
-      next: (response) => {
+      next: (response: ApiResponse<GetMonthlyReportResponse>) => {
         this.isLoading = false;
         if (response.status && response.result) {
           this.monthlyData = response.result;
