@@ -183,3 +183,14 @@ export interface GetMonthlyResultResponse {
   monthlyExpenses: MonthlyReportItem[];
   monthlyIncomes: MonthlyReportItem[];
 }
+
+// ===== 型エイリアス（後方互換性のため） =====
+
+// 取引情報のエイリアス
+export type Transaction = KakeiboItem;
+
+// 日別取引情報のエイリアス
+export type DailySummary = KakeiboItemInfo;
+
+// カテゴリ情報のエイリアス
+export type Category = CategoryItem;

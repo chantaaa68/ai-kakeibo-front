@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { CategoryService } from '../../services/category.service';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { RegistCategoryRequest, IconData } from '../../models/kakeibo.model';
+import { TransactionType } from '../../models/enums';
 
 @Component({
   selector: 'app-category-register',
@@ -23,6 +24,7 @@ export class CategoryRegisterComponent implements OnInit {
   public errorMessage: string | null = null;
   public successMessage: string | null = null;
   public selectedIcon: string | null = null;
+  public readonly TransactionType = TransactionType; // テンプレートから参照するため
 
   constructor(
     private formBuilder: FormBuilder,

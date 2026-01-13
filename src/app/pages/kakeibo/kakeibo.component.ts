@@ -6,7 +6,8 @@ import { KakeiboService } from '../../services/kakeibo.service';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { TransactionListComponent } from './components/transaction-list/transaction-list.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
-import { DailySummary, Transaction } from '../../models/kakeibo.model';
+import { DailySummary, Transaction, GetKakeiboItemListResponse } from '../../models/kakeibo.model';
+import { ApiResponse } from '../../models/api-response.model';
 
 @Component({
   selector: 'app-kakeibo',
@@ -53,18 +54,20 @@ export class KakeiboComponent implements OnInit {
       return;
     }
 
-    this.kakeiboService.getMonthlyData({
-      kakeiboId: '1', // モックデータ用
-      year: this.currentYear,
-      month: this.currentMonth
+    // yyyy-MM形式に変換
+    const range = `${this.currentYear}-${String(this.currentMonth).padStart(2, '0')}`;
+
+    this.kakeiboService.getKakeiboItemList({
+      userId: user.userId,
+      range: range
     }).subscribe({
-      next: (response) => {
+      next: (response: ApiResponse<GetKakeiboItemListResponse>) => {
         this.isLoading = false;
-        if (response.status && response.data) {
-          this.dailySummaries = response.data.dailySummaries;
+        if (response.status && response.result) {
+          this.dailySummaries = response.result.kakeiboItemInfos;
         }
       },
-      error: (error) => {
+      error: (error: unknown) => {
         this.isLoading = false;
         console.error('Failed to load monthly data:', error);
       }
@@ -75,15 +78,10 @@ export class KakeiboComponent implements OnInit {
   public onDateSelected(date: Date): void {
     this.selectedDate = date;
 
-    // 選択された日付の取引を取得
-    const summary = this.dailySummaries.find(s => {
-      const summaryDate = new Date(s.date);
-      return summaryDate.getFullYear() === date.getFullYear() &&
-             summaryDate.getMonth() === date.getMonth() &&
-             summaryDate.getDate() === date.getDate();
-    });
+    // 選択された日付の取引を取得（dayNoは日付の日部分）
+    const summary = this.dailySummaries.find(s => s.dayNo === date.getDate());
 
-    this.selectedTransactions = summary?.transactions || [];
+    this.selectedTransactions = summary?.items || [];
   }
 
   // 月変更時
