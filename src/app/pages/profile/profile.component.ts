@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { UserService, UpdateUserRequest } from '../../services/user.service';
+import { UserService } from '../../services/user.service';
+import { UpdateUserRequest } from '../../models/user.model';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 
 @Component({
@@ -33,11 +34,13 @@ export class ProfileComponent implements OnInit {
     }
 
     const currentUser = this.authService.getCurrentUser();
-    
+
     // フォームを初期化
     this.profileForm = this.formBuilder.group({
-      name: [currentUser?.name || '', [Validators.required, Validators.minLength(2)]],
+      name: [currentUser?.userName || '', [Validators.required, Validators.minLength(2)]],
       email: [currentUser?.email || '', [Validators.required, Validators.email]],
+      kakeiboName: [currentUser?.kakeiboName || ''],
+      kakeiboExplanation: [currentUser?.kakeiboExplanation || ''],
       currentPassword: [''],
       newPassword: ['', [Validators.minLength(6)]],
       confirmPassword: ['']
@@ -65,6 +68,14 @@ export class ProfileComponent implements OnInit {
 
   public get confirmPassword() {
     return this.profileForm.get('confirmPassword');
+  }
+
+  public get kakeiboName() {
+    return this.profileForm.get('kakeiboName');
+  }
+
+  public get kakeiboExplanation() {
+    return this.profileForm.get('kakeiboExplanation');
   }
 
   // パスワード一致バリデーター
@@ -105,17 +116,17 @@ export class ProfileComponent implements OnInit {
     }
 
     const request: UpdateUserRequest = {
-      name: this.profileForm.value.name,
-      email: this.profileForm.value.email
+      userId: user.userId,
+      userName: this.profileForm.value.name || null,
+      email: this.profileForm.value.email || null,
+      kakeiboName: this.profileForm.value.kakeiboName || null,
+      kakeiboExplanation: this.profileForm.value.kakeiboExplanation || null
     };
 
-    // パスワード変更が入力されている場合
-    if (this.profileForm.value.newPassword) {
-      request.currentPassword = this.profileForm.value.currentPassword;
-      request.newPassword = this.profileForm.value.newPassword;
-    }
+    // TODO: パスワード変更機能は別途実装が必要
+    // パスワード変更が入力されている場合はuserHashをハッシュ化して送信する必要がある
 
-    this.userService.updateUser(user.id, request).subscribe({
+    this.userService.updateUser(request).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response.status) {

@@ -16,7 +16,7 @@ export interface ApiConfig {
 export class ApiService {
   // バックエンドのベースURL
   private config: ApiConfig = {
-    baseUrl: 'http://localhost:5000/api',
+    baseUrl: 'https://localhost:5001/api',
     timeout: 30000
   };
 

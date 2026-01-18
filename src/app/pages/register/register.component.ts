@@ -29,7 +29,8 @@ export class RegisterComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
-      kakeiboDescription: [''] // 任意項目
+      kakeiboName: ['My家計簿', [Validators.required]], // 家計簿名（必須）
+      kakeiboDescription: [''] // 家計簿説明（任意項目）
     }, {
       validators: this.passwordMatchValidator
     });
@@ -50,6 +51,10 @@ export class RegisterComponent implements OnInit {
 
   public get confirmPassword() {
     return this.registerForm.get('confirmPassword');
+  }
+
+  public get kakeiboName() {
+    return this.registerForm.get('kakeiboName');
   }
 
   public get kakeiboDescription() {
@@ -86,30 +91,43 @@ export class RegisterComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = null;
 
-    const request: RegisterRequest = {
-      name: this.registerForm.value.name,
-      email: this.registerForm.value.email,
-      password: this.registerForm.value.password,
-      kakeiboDescription: this.registerForm.value.kakeiboDescription || undefined
-    };
+    // パスワードをSHA-256でハッシュ化してからリクエスト
+    this.hashPassword(this.registerForm.value.password).then(hashedPassword => {
+      const request: RegisterRequest = {
+        userName: this.registerForm.value.name,
+        userHash: hashedPassword,
+        email: this.registerForm.value.email,
+        kakeiboName: this.registerForm.value.kakeiboName,
+        kakeiboExplanation: this.registerForm.value.kakeiboDescription || ''
+      };
 
-    this.authService.register(request).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        if (response.status) {
-          // 登録成功、家計簿画面に遷移
-          this.router.navigate(['/kakeibo']);
-        } else {
-          // 登録失敗
-          this.errorMessage = response.message || '登録に失敗しました';
+      this.authService.register(request).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.status) {
+            // 登録成功、家計簿画面に遷移
+            this.router.navigate(['/kakeibo']);
+          } else {
+            // 登録失敗
+            this.errorMessage = response.message || '登録に失敗しました';
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.errorMessage = '登録に失敗しました。もう一度お試しください。';
+          console.error('Register error:', error);
         }
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = '登録に失敗しました。もう一度お試しください。';
-        console.error('Register error:', error);
-      }
+      });
     });
+  }
+
+  // パスワードをSHA-256でハッシュ化
+  private async hashPassword(password: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
   // ログイン画面に遷移

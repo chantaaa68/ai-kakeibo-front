@@ -52,6 +52,15 @@
   gap: var(--spacing-md);
 }
 
+.category-wrapper {
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
 .empty-state {
   text-align: center;
   padding: var(--spacing-2xl);

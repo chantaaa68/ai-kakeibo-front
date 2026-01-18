@@ -1,13 +1,18 @@
 <!-- 共通ヘッダー -->
 <app-header></app-header>
 
-<div class="category-register-container">
+<div class="category-edit-container">
   <div class="container container-md">
-    <div class="register-card card">
+    <div class="edit-card card">
       <!-- ヘッダー -->
-      <div class="register-header">
-        <h2>カテゴリ登録</h2>
-        <p class="text-muted">新しいカテゴリを作成してください</p>
+      <div class="edit-header">
+        <h2>カテゴリ編集</h2>
+        <p class="text-muted">カテゴリ情報を編集してください</p>
+      </div>
+
+      <!-- ローディング中 -->
+      <div *ngIf="isLoadingCategory" class="loading-container">
+        <p>カテゴリを読み込み中...</p>
       </div>
 
       <!-- 成功メッセージ -->
@@ -20,8 +25,8 @@
         {{ errorMessage }}
       </div>
 
-      <!-- 登録フォーム -->
-      <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+      <!-- 編集フォーム -->
+      <form *ngIf="!isLoadingCategory && currentCategory" [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
         <!-- カテゴリ名 -->
         <div class="form-group">
           <label class="form-label" for="name">カテゴリ名</label>
@@ -99,8 +104,8 @@
             type="submit"
             class="btn btn-primary btn-lg"
             [disabled]="isLoading">
-            <span *ngIf="!isLoading">登録</span>
-            <span *ngIf="isLoading">登録中...</span>
+            <span *ngIf="!isLoading">更新</span>
+            <span *ngIf="isLoading">更新中...</span>
           </button>
           <button
             type="button"

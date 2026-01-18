@@ -36,11 +36,11 @@
             <div class="day-number">{{ date.getDate() }}</div>
             <ng-container *ngIf="getDailySummary(date) as summary">
               <div class="day-summary">
-                <div *ngIf="summary.income > 0" class="income-amount text-income">
-                  +{{ formatAmount(summary.income) }}
+                <div *ngIf="getIncome(summary) > 0" class="income-amount text-income">
+                  +{{ formatAmount(getIncome(summary)) }}
                 </div>
-                <div *ngIf="summary.expense > 0" class="expense-amount text-expense">
-                  -{{ formatAmount(summary.expense) }}
+                <div *ngIf="getExpense(summary) > 0" class="expense-amount text-expense">
+                  -{{ formatAmount(getExpense(summary)) }}
                 </div>
               </div>
             </ng-container>

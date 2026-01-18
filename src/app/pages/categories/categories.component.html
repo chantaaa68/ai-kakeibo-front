@@ -38,10 +38,14 @@
 
       <!-- カテゴリグリッド -->
       <div class="categories-grid">
-        <app-category-item
+        <div
           *ngFor="let category of displayedCategories"
-          [category]="category">
-        </app-category-item>
+          (click)="navigateToEdit(category.id)"
+          class="category-wrapper">
+          <app-category-item
+            [category]="category">
+          </app-category-item>
+        </div>
       </div>
 
       <!-- 空の状態 -->
